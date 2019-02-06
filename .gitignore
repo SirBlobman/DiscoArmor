@@ -1,2 +1,6 @@
 # Eclipse Stuff
 .settings/
+target/
+
+.project
+.classpath
