@@ -1,0 +1,22 @@
+name: "${project.artifactId}"
+prefix: "${project.name}"
+main: com.SirBlobman.discoarmor.DiscoArmor
+version: "${project.version}"
+description: "${project.description}"
+
+commands:
+  discoarmor:
+    description: "Enable/Disable your disco armor"
+    usage: "/<command> <on/off>"
+    aliases: [disco, rainbowarmor, rainbow]
+    permission: "discoarmor.use"
+    permission-message: "You are not allowed to do that!"
+    
+permissions:
+  discoarmor.use:
+    description: "Permission for the /discoarmor command"
+    default: op
+    
+  discoarmor.reload:
+    description: "Permission for '/discoarmor reload'"
+    default: op

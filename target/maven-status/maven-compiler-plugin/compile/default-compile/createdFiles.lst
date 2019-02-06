@@ -1,0 +1,10 @@
+com\SirBlobman\discoarmor\DiscoArmor.class
+com\SirBlobman\discoarmor\configuration\Config.class
+com\SirBlobman\discoarmor\type\AmericanFlagType.class
+com\SirBlobman\discoarmor\type\SmoothArmorType.class
+com\SirBlobman\discoarmor\type\RandomColorType.class
+com\SirBlobman\discoarmor\type\OneColorType.class
+com\SirBlobman\discoarmor\type\DiscoArmorType$1.class
+com\SirBlobman\discoarmor\type\DiscoArmorType.class
+com\SirBlobman\discoarmor\configuration\ConfigSettings.class
+com\SirBlobman\discoarmor\DiscoArmorRunnable.class

@@ -1,0 +1,22 @@
+name: "DiscoArmor"
+prefix: "Disco Armor"
+main: com.SirBlobman.discoarmor.DiscoArmor
+version: "2.1"
+description: "Warning: If you are prone to epilepsy, do not use this armor"
+
+commands:
+  discoarmor:
+    description: "Enable/Disable your disco armor"
+    usage: "/<command> <on/off>"
+    aliases: [disco, rainbowarmor, rainbow]
+    permission: "discoarmor.use"
+    permission-message: "You are not allowed to do that!"
+    
+permissions:
+  discoarmor.use:
+    description: "Permission for the /discoarmor command"
+    default: op
+    
+  discoarmor.reload:
+    description: "Permission for '/discoarmor reload'"
+    default: op
