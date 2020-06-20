@@ -1,34 +1,27 @@
-options:
-  # The speed that the armor will change colors
-  # Examples:
-  # 1: Once per tick
-  # 20: Once per second
-  # 1200: Once per minute
-  #
-  # Default: 5
-  armor speed: 5
-  
-  # You have many options for disco armor colors
-  # Valid Options: 
-  #  RANDOM: Random colors on each armor piece
-  #  ONE_COLOR: Random colors, but all armor pieces will be the same color
-  #  SMOOTH: One color, but the colors will transition smoothly to the next color
-  #  OLD_GLORY: Red, White and Blue
-  #
-  # Default: RANDOM
-  armor type: RANDOM
-  
-# Messages for Disco Armor
-# Setting a message to "" will prevent it from sending
+# How long (in ticks) should the time be between color changes?
+# 1 = once per tick
+# 20 = once per second
+# 1200 = once per minute
+#
+# Default: 5
+armor-speed: 5
+
+# Should disco armor be disabled if a player takes damage?
+disable-on-damage: true
+
+menu-title: "&nDisco Armor Menu&r"
+display-name: "&1D&2I&3S&4C&5O&r Armor"
+
+lore:
+  - "&7This is an awesome armor set,"
+  - "&7but you can only remove it by"
+  - "&7typing &e/disco-armor off&7."
+
+# Setting a message to "" or '' will prevent it from being sent.
+# DO NOT remove any message paths from this config.
 messages:
-  enabled: "&b&ki&1&lD&2&lI&3&lS&4&lC&5&lO&b&ki"
-  disabled: "&4&l:("
-  already enabled: "&cYou already have disco armor."
-  already disabled: "&cYou already disabled your disco armor."
-  invalid usage: "&cInvalid usage! Proper usage is shown below."
-  only player: "&cYou are not a Player."
-  reloaded: "The config has been reloaded"
-  no move: "Do '/discoarmor off' to remove this"
-  
-  # Do not disable this message, its used to check the armor
-  armor display name: "&1D&2I&3S&4C&5O"
+  enable-broadcast: "&b&ki&1&lD&2&lI&3&lS&4&lC&5&lO&b&ki&r"
+  disable-broadcast: "&4&l:(&r"
+  not-player: "&cOnly players can use this command."
+  prevent-click: "&cYou are not allowed to remove your disco armor."
+  change-type: "&aYou changed your armor type to &c{type}&a."

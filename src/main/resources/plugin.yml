@@ -1,22 +1,32 @@
-name: "${project.artifactId}"
-prefix: "${project.name}"
-main: com.SirBlobman.discoarmor.DiscoArmor
-version: "${project.version}"
-description: "${project.description}"
+name: "${bukkit.plugin.name}"
+prefix: "${bukkit.plugin.prefix}"
+description: "${bukkit.plugin.description}"
+website: "${project.url}"
+
+main: "${bukkit.plugin.main}"
+version: "${bukkit.plugin.version}"
+api-version: "1.13"
+
+authors:
+  - "${bukkit.plugin.author}"
 
 commands:
-  discoarmor:
-    description: "Enable/Disable your disco armor"
-    usage: "/<command> <on/off>"
-    aliases: [disco, rainbowarmor, rainbow]
-    permission: "discoarmor.use"
-    permission-message: "You are not allowed to do that!"
-    
+  disco-armor:
+    description: "Open the Disco Armor menu to edit your armor."
+    usage: "/<command> on/off/menu"
+    permission: "disco-armor.command.disco-armor"
+    aliases:
+      - "discoarmor"
+      - "disco"
+      - "rainbow"
+      - "rainbow-armor"
+      - "rainbowarmor"
+  
 permissions:
-  discoarmor.use:
-    description: "Permission for the /discoarmor command"
+  disco-armor.command.disco-armor:
+    description: "Allows access to the '/disco-armor' command."
     default: op
-    
-  discoarmor.reload:
-    description: "Permission for '/discoarmor reload'"
-    default: op
+    children:
+      disco-armor.command.disco-armor.reload:
+        description: "Allows access to reloading the configuration files."
+        default: op
