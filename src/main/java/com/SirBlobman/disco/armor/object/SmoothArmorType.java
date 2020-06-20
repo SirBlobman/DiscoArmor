@@ -42,13 +42,13 @@ public class SmoothArmorType extends ArmorType {
         
         if(choice == 0) {
             red += 16;
-            if(red > 255) red = ((255 - red));
+            if(red > 255) red -= 255;
         } else if(choice == 1) {
             green += 16;
-            if(green > 255) green = ((255 - green));
+            if(green > 255) green -= 255;
         } else {
             blue += 16;
-            if(blue > 255) blue = ((255 - blue));
+            if(blue > 255) blue -= 255;
         }
         
         Color newColor = Color.fromRGB(red, green, blue);
