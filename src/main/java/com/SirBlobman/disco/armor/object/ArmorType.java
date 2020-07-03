@@ -14,6 +14,7 @@ import com.SirBlobman.disco.armor.DiscoArmorPlugin;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
@@ -60,6 +61,11 @@ public abstract class ArmorType {
         if(!loreList.isEmpty()) {
             List<String> loreListColored = MessageUtil.colorList(loreList);
             armorMeta.setLore(loreListColored);
+        }
+        
+        if(config.getBoolean("glowing", false)) {
+            armorMeta.addEnchant(Enchantment.LUCK, 1, true);
+            armorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         
         item.setItemMeta(armorMeta);

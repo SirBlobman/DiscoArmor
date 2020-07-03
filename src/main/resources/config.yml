@@ -9,9 +9,11 @@ armor-speed: 5
 # Should disco armor be disabled if a player takes damage?
 disable-on-damage: true
 
+# Should disco armor have a LUCK enchantment and a HIDE_ENCHANTS flag?
+glowing: false
+
 menu-title: "&nDisco Armor Menu&r"
 display-name: "&1D&2I&3S&4C&5O&r Armor"
-
 lore:
   - "&7This is an awesome armor set,"
   - "&7but you can only remove it by"
