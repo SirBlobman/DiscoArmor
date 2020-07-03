@@ -40,10 +40,10 @@ public class DiscoArmorPlugin extends SirBlobmanPlugin<DiscoArmorPlugin> {
     @Override
     public void onEnable() {
         int minorVersion = VersionUtil.getMinorVersion();
-        if(minorVersion < 13 || minorVersion > 15) {
+        if(minorVersion < 13 || minorVersion > 16) {
             String fullVersion = VersionUtil.getMinecraftVersion();
             Logger logger = getLogger();
-            logger.warning(fullVersion + " is not supported, please use 1.13.2, 1.14.4, or 1.15.2");
+            logger.warning(fullVersion + " is not supported, please use 1.13.2, 1.14.4, 1.15.2, or 1.16.1");
             
             setEnabled(false);
             return;

@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.SirBlobman.api.command.PlayerCommand;
 import com.SirBlobman.api.command.SubCommand;
+import com.SirBlobman.api.utility.MessageUtil;
 import com.SirBlobman.disco.armor.DiscoArmorPlugin;
 import com.SirBlobman.disco.armor.manager.ArmorChoiceManager;
 import com.SirBlobman.disco.armor.menu.DiscoArmorMenu;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class CommandDiscoArmor extends PlayerCommand<DiscoArmorPlugin> {
@@ -23,7 +25,13 @@ public class CommandDiscoArmor extends PlayerCommand<DiscoArmorPlugin> {
     
     @Override
     public boolean onCommand(Player player, String[] args) {
-        return false;
+        YamlConfiguration config = this.plugin.getConfig();
+        String message = config.getString("messages.command-usage");
+        if(message == null) return false;
+        
+        String color = MessageUtil.color(message);
+        player.sendMessage(color);
+        return true;
     }
     
     @SubCommand(name="reload")
