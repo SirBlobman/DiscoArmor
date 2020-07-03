@@ -37,8 +37,15 @@ public class CommandDiscoArmor extends PlayerCommand<DiscoArmorPlugin> {
     @SubCommand(name="reload")
     public boolean reload(Player player, String[] args) {
         if(!player.hasPermission("disco-armor.command.disco-armor.reload")) return true;
-        
         this.plugin.reloadConfig();
+        
+        YamlConfiguration config = this.plugin.getConfig();
+        String message = config.getString("messages.reload-success");
+        if(message != null) {
+            String color = MessageUtil.color(message);
+            player.sendMessage(color);
+        }
+        
         return true;
     }
     

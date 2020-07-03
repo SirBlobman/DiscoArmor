@@ -26,3 +26,4 @@ messages:
   prevent-click: "&cYou are not allowed to remove your disco armor."
   change-type: "&aYou changed your armor type to &c{type}&a."
   command-usage: "&f/disco-armor on/off/menu"
+  reload-success: "&aSuccessfully reloaded the config.yml for Disco Armor."
