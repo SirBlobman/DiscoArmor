@@ -41,7 +41,7 @@ public class OldGloryArmorType extends ArmorType {
         Color color = getNextColor(player);
     
         for(EquipmentSlot slot : slotArray) {
-            ItemStack item = createLeatherArmor(slot, color);
+            ItemStack item = createLeatherArmor(player, slot, color);
             if(item == null) continue;
         
             nextArmor.put(slot, item);

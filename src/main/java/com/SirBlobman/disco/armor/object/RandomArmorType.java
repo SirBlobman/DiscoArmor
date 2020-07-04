@@ -47,7 +47,7 @@ public class RandomArmorType extends ArmorType {
         
         for(EquipmentSlot slot : slotArray) {
             Color color = getNextColor(player);
-            ItemStack item = createLeatherArmor(slot, color);
+            ItemStack item = createLeatherArmor(player, slot, color);
             
             if(item == null) continue;
             nextArmor.put(slot, item);

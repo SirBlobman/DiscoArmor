@@ -10,6 +10,7 @@ import com.SirBlobman.api.nms.ItemHandler;
 import com.SirBlobman.api.nms.MultiVersionHandler;
 import com.SirBlobman.api.utility.MessageUtil;
 import com.SirBlobman.disco.armor.DiscoArmorPlugin;
+import com.SirBlobman.disco.armor.manager.ArmorChoiceManager;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -34,9 +35,10 @@ public abstract class ArmorType {
         return this.id;
     }
     
-    public final ItemStack createLeatherArmor(EquipmentSlot slot, Color color) {
+    public final ItemStack createLeatherArmor(Player player, EquipmentSlot slot, Color color) {
         DiscoArmorPlugin discoArmorPlugin = JavaPlugin.getPlugin(DiscoArmorPlugin.class);
         YamlConfiguration config = discoArmorPlugin.getConfig();
+        
         MultiVersionHandler<?> multiVersionHandler = discoArmorPlugin.getMultiVersionHandler();
         AbstractNMS nmsHandler = multiVersionHandler.getInterface();
         ItemHandler itemHandler = nmsHandler.getItemHandler();
@@ -62,8 +64,9 @@ public abstract class ArmorType {
             List<String> loreListColored = MessageUtil.colorList(loreList);
             armorMeta.setLore(loreListColored);
         }
-        
-        if(config.getBoolean("glowing", false)) {
+    
+        ArmorChoiceManager armorChoiceManager = discoArmorPlugin.getArmorChoiceManager();
+        if(armorChoiceManager.shouldGlow(player)) {
             armorMeta.addEnchant(Enchantment.LUCK, 1, true);
             armorMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
