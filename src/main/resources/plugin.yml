@@ -13,7 +13,7 @@ authors:
 commands:
   disco-armor:
     description: "Open the Disco Armor menu to edit your armor."
-    usage: "/<command> on/off/menu"
+    usage: "/<command> on/off/menu/glow"
     permission: "disco-armor.command.disco-armor"
     aliases:
       - "discoarmor"

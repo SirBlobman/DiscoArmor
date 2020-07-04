@@ -10,6 +10,7 @@ armor-speed: 5
 disable-on-damage: true
 
 # Should disco armor have a LUCK enchantment and a HIDE_ENCHANTS flag?
+# (This is the default option, players can change their own armor by typing '/disco-armor glow')
 glowing: false
 
 menu-title: "&nDisco Armor Menu&r"
@@ -27,5 +28,7 @@ messages:
   not-player: "&cOnly players can use this command."
   prevent-click: "&cYou are not allowed to remove your disco armor."
   change-type: "&aYou changed your armor type to &c{type}&a."
-  command-usage: "&f/disco-armor on/off/menu"
+  command-usage: "&f/disco-armor on/off/menu/glow"
   reload-success: "&aSuccessfully reloaded the config.yml for Disco Armor."
+  enable-glow: "&aSuccessfully enabled your armor glow effect."
+  disable-glow: "&aSuccessfully disabled your armor glow effect."

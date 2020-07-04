@@ -38,7 +38,7 @@ public class CommandDiscoArmor extends PlayerCommand<DiscoArmorPlugin> {
     public boolean reload(Player player, String[] args) {
         if(!player.hasPermission("disco-armor.command.disco-armor.reload")) return true;
         this.plugin.reloadConfig();
-        
+    
         YamlConfiguration config = this.plugin.getConfig();
         String message = config.getString("messages.reload-success");
         if(message != null) {
@@ -65,6 +65,23 @@ public class CommandDiscoArmor extends PlayerCommand<DiscoArmorPlugin> {
     public boolean off(Player player, String[] args) {
         ArmorChoiceManager armorChoiceManager = this.plugin.getArmorChoiceManager();
         armorChoiceManager.setArmorType(player, null);
+        return true;
+    }
+    
+    @SubCommand(name="glow")
+    public boolean glow(Player player, String[] args) {
+        ArmorChoiceManager armorChoiceManager = this.plugin.getArmorChoiceManager();
+        armorChoiceManager.toggleGlow(player);
+        boolean shouldGlow = armorChoiceManager.shouldGlow(player);
+    
+        YamlConfiguration config = this.plugin.getConfig();
+        String path = ("messages." + (shouldGlow ? "enable" : "disable") + "-glow");
+        String message = config.getString(path);
+        if(message != null) {
+            String color = MessageUtil.color(message);
+            player.sendMessage(color);
+        }
+        
         return true;
     }
 }
