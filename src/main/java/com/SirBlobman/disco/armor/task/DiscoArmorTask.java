@@ -1,82 +1,119 @@
 package com.SirBlobman.disco.armor.task;
 
-import java.util.*;
-
-import com.SirBlobman.api.item.ItemUtil;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.manager.ArmorChoiceManager;
-import com.SirBlobman.disco.armor.object.ArmorType;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class DiscoArmorTask extends BukkitRunnable {
+import com.SirBlobman.api.configuration.PlayerDataManager;
+import com.SirBlobman.api.item.ArmorType;
+import com.SirBlobman.api.nms.ItemHandler;
+import com.SirBlobman.api.nms.MultiVersionHandler;
+import com.SirBlobman.api.utility.ItemUtility;
+import com.SirBlobman.api.utility.Validate;
+import com.SirBlobman.disco.armor.DiscoArmorPlugin;
+import com.SirBlobman.disco.armor.manager.PatternManager;
+import com.SirBlobman.disco.armor.pattern.Pattern;
+
+public final class DiscoArmorTask extends BukkitRunnable {
     private final DiscoArmorPlugin plugin;
     private final Map<UUID, ItemStack[]> oldArmorMap;
     public DiscoArmorTask(DiscoArmorPlugin plugin) {
-        this.plugin = Objects.requireNonNull(plugin, "plugin must not be null!");
+        this.plugin = Validate.notNull(plugin, "plugin must not be null!");
         this.oldArmorMap = new HashMap<>();
     }
-    
+
     @Override
     public void run() {
-        ArmorChoiceManager armorChoiceManager = this.plugin.getArmorChoiceManager();
-        Collection<? extends Player> onlinePlayerList = Bukkit.getOnlinePlayers();
-        for(Player player : onlinePlayerList) {
-            ArmorType armorType = armorChoiceManager.getArmorType(player);
-            if(armorType == null) {
-                loadOldArmor(player);
-                continue;
-            }
-            
-            saveOldArmor(player);
-            Map<EquipmentSlot, ItemStack> nextArmor = armorType.getNextArmor(player);
-            nextArmor.forEach((slot, item) -> setItem(player, slot, item));
-        }
+        Collection<? extends Player> onlinePlayerCollection = Bukkit.getOnlinePlayers();
+        onlinePlayerCollection.forEach(this::check);
     }
-    
-    public void saveOldArmor(Player player) {
+
+    public void disableAll() {
+        Collection<? extends Player> onlinePlayerCollection = Bukkit.getOnlinePlayers();
+        onlinePlayerCollection.forEach(this::disable);
+    }
+
+    public void disable(Player player) {
+        PlayerDataManager playerDataManager = this.plugin.getPlayerDataManager();
+        YamlConfiguration configuration = playerDataManager.get(player);
+        configuration.set("pattern", null);
+        playerDataManager.save(player);
+        check(player);
+    }
+
+    private void check(Player player) {
+        PlayerDataManager playerDataManager = this.plugin.getPlayerDataManager();
+        YamlConfiguration configuration = playerDataManager.get(player);
+        String patternName = configuration.getString("pattern");
+
+        PatternManager patternManager = this.plugin.getPatternManager();
+        Pattern pattern = patternManager.getPattern(patternName);
+        if(pattern == null) {
+            loadOldArmor(player);
+            return;
+        }
+
+        saveOldArmor(player);
+        Map<ArmorType, ItemStack> nextArmor = pattern.getNextArmor(player);
+        nextArmor.forEach((armorType, armor) -> setArmor(player, armorType, armor));
+    }
+
+    private void saveOldArmor(Player player) {
         UUID uuid = player.getUniqueId();
         if(this.oldArmorMap.containsKey(uuid)) return;
-        
-        PlayerInventory playerInventory = player.getInventory();
-        ItemStack[] armor = getArmor(playerInventory);
-        this.oldArmorMap.put(uuid, armor);
+
+        ItemStack[] oldArmor = getArmor(player);
+        this.oldArmorMap.put(uuid, oldArmor);
     }
-    
-    public void loadOldArmor(Player player) {
+
+    private void loadOldArmor(Player player) {
         UUID uuid = player.getUniqueId();
         ItemStack[] oldArmor = this.oldArmorMap.remove(uuid);
         if(oldArmor == null) return;
-    
+
         PlayerInventory playerInventory = player.getInventory();
         playerInventory.setArmorContents(oldArmor);
+        player.updateInventory();
     }
-    
-    private ItemStack[] getArmor(PlayerInventory playerInventory) {
+
+    private ItemStack[] getArmor(Player player) {
+        PlayerInventory playerInventory = player.getInventory();
         ItemStack[] armorContents = playerInventory.getArmorContents();
         int armorContentsLength = armorContents.length;
-        
+
         for(int slot = 0; slot < armorContentsLength; slot++) {
             ItemStack item = armorContents[slot];
-            if(!this.plugin.isDiscoArmor(item)) continue;
-            armorContents[slot] = ItemUtil.getAir();
+            if(isDiscoArmor(item)) armorContents[slot] = new ItemStack(Material.AIR);
         }
-        
+
         return armorContents;
     }
-    
-    private void setItem(Player player, EquipmentSlot slot, ItemStack item) {
+
+    private boolean isDiscoArmor(ItemStack item) {
+        if(ItemUtility.isAir(item)) return false;
+        MultiVersionHandler multiVersionHandler = this.plugin.getMultiVersionHandler();
+        ItemHandler itemHandler = multiVersionHandler.getItemHandler();
+
+        String customNBT = itemHandler.getCustomNBT(item, "disco", "not");
+        return customNBT.equals("armor");
+    }
+
+    private void setArmor(Player player, ArmorType armorType, ItemStack armor) {
         PlayerInventory playerInventory = player.getInventory();
-        switch(slot) {
-            case HEAD: playerInventory.setHelmet(item); return;
-            case CHEST: playerInventory.setChestplate(item); return;
-            case LEGS: playerInventory.setLeggings(item); return;
-            case FEET: playerInventory.setBoots(item); return;
+        switch(armorType) {
+            case HELMET: playerInventory.setHelmet(armor); break;
+            case CHESTPLATE: playerInventory.setChestplate(armor); break;
+            case LEGGINGS: playerInventory.setLeggings(armor); break;
+            case BOOTS: playerInventory.setBoots(armor); break;
             default: break;
         }
     }

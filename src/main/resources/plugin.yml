@@ -7,14 +7,17 @@ main: "${bukkit.plugin.main}"
 version: "${bukkit.plugin.version}"
 api-version: "1.13"
 
+depend:
+  - "SirBlobmanCore"
+
 authors:
   - "${bukkit.plugin.author}"
 
 commands:
   disco-armor:
     description: "Open the Disco Armor menu to edit your armor."
-    usage: "/<command> on/off/menu/glow"
     permission: "disco-armor.command.disco-armor"
+    usage: "/<command> on/off/menu/glow"
     aliases:
       - "discoarmor"
       - "disco"

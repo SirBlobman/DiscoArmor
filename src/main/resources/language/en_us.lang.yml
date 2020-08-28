@@ -1,0 +1,18 @@
+error:
+  player-only: "&cOnly players can execute this command."
+  prevent-removal: "&cYou are not allowed to remove your disco armor."
+  invalid-pattern: "&7{pattern}&c is not a valid pattern."
+
+glow:
+  enabled: "&7Glow Effect: &aON"
+  disabled: "&7Glow Effect: &cOFF"
+
+command:
+  usage:
+    - "&f/disco-armor on&7: Open the menu to choose a pattern."
+    - "&f/disco-armor off&7: Disable your disco armor."
+    - "&f/disco-armor glow&7: Toggle the enchantment effect on your armor."
+    - "&f/disco-armor select&7: Manually choose an armor type."
+
+  reload-success: "&aSuccessfully reloaded the configuration files."
+  change-type: "&aSuccessfully changed your armor pattern to &7{pattern}&a."
