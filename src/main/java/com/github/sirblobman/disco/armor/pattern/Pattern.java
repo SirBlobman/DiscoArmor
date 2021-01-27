@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor.pattern;
+package com.github.sirblobman.disco.armor.pattern;
 
 import java.util.List;
 import java.util.Map;
@@ -9,17 +9,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import com.SirBlobman.api.configuration.ConfigurationManager;
-import com.SirBlobman.api.configuration.PlayerDataManager;
-import com.SirBlobman.api.item.ArmorType;
-import com.SirBlobman.api.item.ItemBuilder;
-import com.SirBlobman.api.item.LeatherArmorBuilder;
-import com.SirBlobman.api.nms.ItemHandler;
-import com.SirBlobman.api.nms.MultiVersionHandler;
-import com.SirBlobman.api.utility.MessageUtility;
-import com.SirBlobman.api.utility.Validate;
-import com.SirBlobman.api.xseries.XMaterial;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.api.configuration.ConfigurationManager;
+import com.github.sirblobman.api.configuration.PlayerDataManager;
+import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.api.item.ItemBuilder;
+import com.github.sirblobman.api.item.LeatherArmorBuilder;
+import com.github.sirblobman.api.nms.ItemHandler;
+import com.github.sirblobman.api.nms.MultiVersionHandler;
+import com.github.sirblobman.api.utility.MessageUtility;
+import com.github.sirblobman.api.utility.Validate;
+import com.github.sirblobman.api.xseries.XMaterial;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
 public abstract class Pattern {
     private final String id;

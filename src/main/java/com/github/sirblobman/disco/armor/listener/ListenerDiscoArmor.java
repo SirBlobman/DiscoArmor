@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor.listener;
+package com.github.sirblobman.disco.armor.listener;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -14,14 +14,14 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.SirBlobman.api.configuration.ConfigurationManager;
-import com.SirBlobman.api.language.LanguageManager;
-import com.SirBlobman.api.nms.ItemHandler;
-import com.SirBlobman.api.nms.MultiVersionHandler;
-import com.SirBlobman.api.utility.ItemUtility;
-import com.SirBlobman.api.utility.Validate;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.task.DiscoArmorTask;
+import com.github.sirblobman.api.configuration.ConfigurationManager;
+import com.github.sirblobman.api.language.LanguageManager;
+import com.github.sirblobman.api.nms.ItemHandler;
+import com.github.sirblobman.api.nms.MultiVersionHandler;
+import com.github.sirblobman.api.utility.ItemUtility;
+import com.github.sirblobman.api.utility.Validate;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
 
 public class ListenerDiscoArmor implements Listener {
     private final DiscoArmorPlugin plugin;

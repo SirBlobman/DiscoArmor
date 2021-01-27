@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor.menu;
+package com.github.sirblobman.disco.armor.menu;
 
 import java.util.List;
 
@@ -6,11 +6,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.SirBlobman.api.configuration.ConfigurationManager;
-import com.SirBlobman.api.menu.AbstractMenu;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.manager.PatternManager;
-import com.SirBlobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.api.configuration.ConfigurationManager;
+import com.github.sirblobman.api.menu.AbstractMenu;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.pattern.Pattern;
 
 public class DiscoArmorMenu extends AbstractMenu {
     private final DiscoArmorPlugin plugin;

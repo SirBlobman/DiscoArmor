@@ -1,34 +1,36 @@
-package com.SirBlobman.disco.armor.pattern;
+package com.github.sirblobman.disco.armor.pattern;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.SirBlobman.api.item.ArmorType;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.api.xseries.XMaterial;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class OneColorPattern extends Pattern {
-    public OneColorPattern(DiscoArmorPlugin plugin) {
-        super(plugin, "one_color");
+public class GrayscalePattern extends Pattern {
+    public GrayscalePattern(DiscoArmorPlugin plugin) {
+        super(plugin, "grayscale");
     }
 
     @Override
     public String getDisplayName() {
-        return "&eOne Color";
+        return "&7Grayscale";
     }
-
     @Override
     public Color getNextColor(Player player) {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int red = rng.nextInt(256);
         int green = rng.nextInt(256);
         int blue = rng.nextInt(256);
-        return Color.fromRGB(red, green, blue);
+
+        int colorSum = (red + green + blue);
+        int colorAverage = (colorSum / 3);
+        return Color.fromRGB(colorAverage, colorAverage, colorAverage);
     }
 
     @Override
@@ -47,13 +49,7 @@ public class OneColorPattern extends Pattern {
 
     @Override
     protected ItemStack getMenuItem() {
-        Tag<Material> bannerTag = Tag.ITEMS_BANNERS;
-        Set<Material> bannerSet = bannerTag.getValues();
-        List<Material> bannerList = new ArrayList<>(bannerSet);
-        int bannerListSize = bannerList.size();
-
-        ThreadLocalRandom rng = ThreadLocalRandom.current();
-        Material bannerType = bannerList.get(rng.nextInt(bannerListSize));
-        return new ItemStack(bannerType, 1);
+        return XMaterial.GRAY_BANNER.parseItem();
     }
+
 }

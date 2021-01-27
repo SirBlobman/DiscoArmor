@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor.task;
+package com.github.sirblobman.disco.armor.task;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,15 +13,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.SirBlobman.api.configuration.PlayerDataManager;
-import com.SirBlobman.api.item.ArmorType;
-import com.SirBlobman.api.nms.ItemHandler;
-import com.SirBlobman.api.nms.MultiVersionHandler;
-import com.SirBlobman.api.utility.ItemUtility;
-import com.SirBlobman.api.utility.Validate;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.manager.PatternManager;
-import com.SirBlobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.api.configuration.PlayerDataManager;
+import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.api.nms.ItemHandler;
+import com.github.sirblobman.api.nms.MultiVersionHandler;
+import com.github.sirblobman.api.utility.ItemUtility;
+import com.github.sirblobman.api.utility.Validate;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.pattern.Pattern;
 
 public final class DiscoArmorTask extends BukkitRunnable {
     private final DiscoArmorPlugin plugin;

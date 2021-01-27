@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor;
+package com.github.sirblobman.disco.armor;
 
 import java.util.logging.Logger;
 
@@ -7,19 +7,25 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.SirBlobman.api.configuration.ConfigurationManager;
-import com.SirBlobman.api.configuration.PlayerDataManager;
-import com.SirBlobman.api.language.LanguageManager;
-import com.SirBlobman.api.nms.MultiVersionHandler;
-import com.SirBlobman.api.update.UpdateChecker;
-import com.SirBlobman.api.utility.MessageUtility;
-import com.SirBlobman.api.utility.VersionUtility;
-import com.SirBlobman.core.CorePlugin;
-import com.SirBlobman.disco.armor.command.CommandDiscoArmor;
-import com.SirBlobman.disco.armor.listener.ListenerDiscoArmor;
-import com.SirBlobman.disco.armor.manager.PatternManager;
-import com.SirBlobman.disco.armor.pattern.*;
-import com.SirBlobman.disco.armor.task.DiscoArmorTask;
+import com.github.sirblobman.api.configuration.ConfigurationManager;
+import com.github.sirblobman.api.configuration.PlayerDataManager;
+import com.github.sirblobman.api.core.CorePlugin;
+import com.github.sirblobman.api.language.LanguageManager;
+import com.github.sirblobman.api.nms.MultiVersionHandler;
+import com.github.sirblobman.api.update.UpdateChecker;
+import com.github.sirblobman.api.utility.MessageUtility;
+import com.github.sirblobman.api.utility.VersionUtility;
+import com.github.sirblobman.disco.armor.command.CommandDiscoArmor;
+import com.github.sirblobman.disco.armor.listener.ListenerDiscoArmor;
+import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.pattern.GrayscalePattern;
+import com.github.sirblobman.disco.armor.pattern.OldGloryPattern;
+import com.github.sirblobman.disco.armor.pattern.OneColorPattern;
+import com.github.sirblobman.disco.armor.pattern.RainbowPattern;
+import com.github.sirblobman.disco.armor.pattern.RandomPattern;
+import com.github.sirblobman.disco.armor.pattern.SmoothPattern;
+import com.github.sirblobman.disco.armor.pattern.YellowOrangePattern;
+import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
 
 public class DiscoArmorPlugin extends JavaPlugin {
     private final ConfigurationManager configurationManager;

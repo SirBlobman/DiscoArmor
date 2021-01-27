@@ -1,16 +1,16 @@
-package com.SirBlobman.disco.armor.menu;
+package com.github.sirblobman.disco.armor.menu;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import com.SirBlobman.api.configuration.PlayerDataManager;
-import com.SirBlobman.api.language.LanguageManager;
-import com.SirBlobman.api.language.Replacer;
-import com.SirBlobman.api.menu.button.QuickButton;
-import com.SirBlobman.api.utility.MessageUtility;
-import com.SirBlobman.api.utility.Validate;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.api.configuration.PlayerDataManager;
+import com.github.sirblobman.api.language.LanguageManager;
+import com.github.sirblobman.api.language.Replacer;
+import com.github.sirblobman.api.menu.button.QuickButton;
+import com.github.sirblobman.api.utility.MessageUtility;
+import com.github.sirblobman.api.utility.Validate;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.pattern.Pattern;
 
 public class PatternButton extends QuickButton {
     private final Pattern pattern;

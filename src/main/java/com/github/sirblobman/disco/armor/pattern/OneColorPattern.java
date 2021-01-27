@@ -1,33 +1,29 @@
-package com.SirBlobman.disco.armor.pattern;
+package com.github.sirblobman.disco.armor.pattern;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.SirBlobman.api.item.ArmorType;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class RandomPattern extends Pattern {
-    public RandomPattern(DiscoArmorPlugin plugin) {
-        super(plugin, "random");
+public class OneColorPattern extends Pattern {
+    public OneColorPattern(DiscoArmorPlugin plugin) {
+        super(plugin, "one_color");
     }
 
     @Override
     public String getDisplayName() {
-        ChatColor[] chatColorArray = ChatColor.values();
-        ChatColor[] colorArray = Arrays.stream(chatColorArray).filter(ChatColor::isColor).toArray(ChatColor[]::new);
-        int colorArrayLength = colorArray.length;
-
-        ThreadLocalRandom rng = ThreadLocalRandom.current();
-        int colorIndex = rng.nextInt(colorArrayLength);
-        ChatColor randomColor = colorArray[colorIndex];
-        return (randomColor + "Random Color");
+        return "&eOne Color";
     }
 
     @Override
@@ -42,9 +38,10 @@ public class RandomPattern extends Pattern {
     @Override
     public Map<ArmorType, ItemStack> getNextArmor(Player player) {
         Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
+        Color nextColor = getNextColor(player);
+
         ArmorType[] armorTypeArray = ArmorType.values();
         for(ArmorType armorType : armorTypeArray) {
-            Color nextColor = getNextColor(player);
             ItemStack armor = createArmor(player, armorType, nextColor);
             armorMap.put(armorType, armor);
         }

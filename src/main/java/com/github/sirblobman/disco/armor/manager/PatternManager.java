@@ -1,13 +1,18 @@
-package com.SirBlobman.disco.armor.manager;
+package com.github.sirblobman.disco.armor.manager;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.SirBlobman.api.utility.Validate;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.api.utility.Validate;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.pattern.Pattern;
 
 public final class PatternManager {
     private final DiscoArmorPlugin plugin;

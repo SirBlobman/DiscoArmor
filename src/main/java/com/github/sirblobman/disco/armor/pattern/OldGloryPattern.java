@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor.pattern;
+package com.github.sirblobman.disco.armor.pattern;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
-import com.SirBlobman.api.item.ArmorType;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
 public class OldGloryPattern extends Pattern {
     private static final Color OLD_GLORY_RED = Color.fromRGB(191, 10, 48);

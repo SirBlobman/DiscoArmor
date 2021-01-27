@@ -1,4 +1,4 @@
-package com.SirBlobman.disco.armor.command;
+package com.github.sirblobman.disco.armor.command;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,15 +7,15 @@ import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import com.SirBlobman.api.command.PlayerCommand;
-import com.SirBlobman.api.configuration.PlayerDataManager;
-import com.SirBlobman.api.language.LanguageManager;
-import com.SirBlobman.api.language.Replacer;
-import com.SirBlobman.api.utility.MessageUtility;
-import com.SirBlobman.disco.armor.DiscoArmorPlugin;
-import com.SirBlobman.disco.armor.manager.PatternManager;
-import com.SirBlobman.disco.armor.menu.DiscoArmorMenu;
-import com.SirBlobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.api.command.PlayerCommand;
+import com.github.sirblobman.api.configuration.PlayerDataManager;
+import com.github.sirblobman.api.language.LanguageManager;
+import com.github.sirblobman.api.language.Replacer;
+import com.github.sirblobman.api.utility.MessageUtility;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.menu.DiscoArmorMenu;
+import com.github.sirblobman.disco.armor.pattern.Pattern;
 
 public class CommandDiscoArmor extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
@@ -36,7 +36,7 @@ public class CommandDiscoArmor extends PlayerCommand {
             return getMatching(valueList, args[0]);
         }
 
-        if(args.length == 2 && args[0].toLowerCase().equals("select")) {
+        if(args.length == 2 && args[0].equalsIgnoreCase("select")) {
             PatternManager patternManager = this.plugin.getPatternManager();
             List<String> valueList = patternManager.getPatternIds();
             return getMatching(valueList, args[1]);
