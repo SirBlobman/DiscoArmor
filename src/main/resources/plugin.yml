@@ -30,6 +30,8 @@ permissions:
     description: "Allows access to the '/disco-armor' command."
     default: op
     children:
-      disco-armor.command.disco-armor.reload:
-        description: "Allows access to reloading the configuration files."
-        default: op
+      - "disco-armor.command.disco-armor.reload"
+
+  disco-armor.command.disco-armor.reload:
+    description: "Allows access to reloading the configuration files."
+    default: op
