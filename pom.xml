@@ -23,7 +23,7 @@
         <bukkit.plugin.description>${project.description}</bukkit.plugin.description>
         
         <bukkit.plugin.main>com.github.sirblobman.disco.armor.DiscoArmorPlugin</bukkit.plugin.main>
-        <bukkit.plugin.version>5.0.0</bukkit.plugin.version>
+        <bukkit.plugin.version>5.0.1</bukkit.plugin.version>
         <bukkit.plugin.author>SirBlobman</bukkit.plugin.author>
     </properties>
     
@@ -34,14 +34,22 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
 
-        <!-- CodeMC Public Repository -->
+        <!-- SirBlobman Public -->
         <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <id>sirblobman-public</id>
+            <url>https://nexus.sirblobman.xyz/repository/public/</url>
         </repository>
     </repositories>
     
     <dependencies>
+        <!-- JetBrains Annotations -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>20.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Spigot API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
