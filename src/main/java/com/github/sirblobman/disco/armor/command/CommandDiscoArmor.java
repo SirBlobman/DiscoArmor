@@ -17,6 +17,8 @@ import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.menu.DiscoArmorMenu;
 import com.github.sirblobman.disco.armor.pattern.Pattern;
 
+import org.jetbrains.annotations.NotNull;
+
 public class CommandDiscoArmor extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
     public CommandDiscoArmor(DiscoArmorPlugin plugin) {
@@ -24,6 +26,7 @@ public class CommandDiscoArmor extends PlayerCommand {
         this.plugin = plugin;
     }
 
+    @NotNull
     @Override
     public LanguageManager getLanguageManager() {
         return this.plugin.getLanguageManager();
@@ -52,11 +55,11 @@ public class CommandDiscoArmor extends PlayerCommand {
         String sub = args[0].toLowerCase();
         String[] newArgs = (args.length < 2 ? new String[0] : Arrays.copyOfRange(args, 1, args.length));
         switch(sub) {
-            case "on": return openMenu(player);
-            case "off": return disableArmor(player);
-            case "glow": return toggleGlow(player);
-            case "select": return selectCommand(player, newArgs);
-            case "reload": return reloadCommand(player);
+            case "on": return commandOn(player);
+            case "off": return commandOff(player);
+            case "glow": return commandGlow(player);
+            case "select": return commandSelect(player, newArgs);
+            case "reload": return commandReload(player);
             default: break;
         }
 
@@ -69,22 +72,21 @@ public class CommandDiscoArmor extends PlayerCommand {
         return true;
     }
 
-    private boolean reloadCommand(Player player) {
+    private boolean commandReload(Player player) {
         if(!checkPermission(player, "disco-armor.reload", true)) return true;
-        this.plugin.reloadConfig();
+        this.plugin.onReload();
 
         LanguageManager languageManager = getLanguageManager();
-        languageManager.sendMessage(player, "command.reload-sucess", null, true);
+        languageManager.sendMessage(player, "command.reload-success", null, true);
         return true;
     }
 
-    private boolean openMenu(Player player) {
-        DiscoArmorMenu discoArmorMenu = new DiscoArmorMenu(this.plugin, player);
-        discoArmorMenu.open();
+    private boolean commandOn(Player player) {
+        new DiscoArmorMenu(this.plugin, player).open();
         return true;
     }
 
-    private boolean disableArmor(Player player) {
+    private boolean commandOff(Player player) {
         PlayerDataManager playerDataManager = this.plugin.getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         configuration.set("pattern", null);
@@ -92,10 +94,11 @@ public class CommandDiscoArmor extends PlayerCommand {
         return true;
     }
 
-    private boolean toggleGlow(Player player) {
+    private boolean commandGlow(Player player) {
         PlayerDataManager playerDataManager = this.plugin.getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         boolean glowing = !configuration.getBoolean("glowing");
+
         configuration.set("glowing", glowing);
         playerDataManager.save(player);
 
@@ -105,7 +108,7 @@ public class CommandDiscoArmor extends PlayerCommand {
         return true;
     }
 
-    private boolean selectCommand(Player player, String[] args) {
+    private boolean commandSelect(Player player, String[] args) {
         if(args.length < 1) return false;
         String patternId = args[0].toLowerCase();
 
