@@ -5,11 +5,13 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.sirblobman.api.configuration.ConfigurationManager;
+import com.github.sirblobman.api.core.CorePlugin;
 import com.github.sirblobman.api.core.plugin.ConfigurablePlugin;
 import com.github.sirblobman.api.language.LanguageManager;
-import com.github.sirblobman.api.update.UpdateChecker;
+import com.github.sirblobman.api.update.UpdateManager;
 import com.github.sirblobman.api.utility.MessageUtility;
 import com.github.sirblobman.api.utility.VersionUtility;
 import com.github.sirblobman.disco.armor.command.CommandDiscoArmor;
@@ -52,13 +54,14 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
             logger.warning("You should not be using it on " + VersionUtility.getMinecraftVersion());
         }
 
+        CorePlugin corePlugin = JavaPlugin.getPlugin(CorePlugin.class);
+        UpdateManager updateManager = corePlugin.getUpdateManager();
+        updateManager.addResource(this, 60700L);
+
         registerPatterns();
         registerCommands();
         registerListeners();
         registerTasks();
-
-        UpdateChecker updateChecker = new UpdateChecker(this, 60700L);
-        updateChecker.runCheck();
 
         ConfigurationManager configurationManager = getConfigurationManager();
         YamlConfiguration configuration = configurationManager.get("config.yml");
@@ -73,8 +76,10 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
     public void onDisable() {
         DiscoArmorTask discoArmorTask = getDiscoArmorTask();
         if(discoArmorTask != null) {
-            discoArmorTask.cancel();
-            discoArmorTask.disableAll();
+            try {
+                discoArmorTask.cancel();
+                discoArmorTask.disableAll();
+            } catch(IllegalStateException ignored) {}
         }
 
         ConfigurationManager configurationManager = getConfigurationManager();
@@ -129,8 +134,10 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
     private void registerTasks() {
         DiscoArmorTask discoArmorTask = getDiscoArmorTask();
         if(discoArmorTask != null) {
-            discoArmorTask.cancel();
-            discoArmorTask.disableAll();
+            try {
+                discoArmorTask.cancel();
+                discoArmorTask.disableAll();
+            } catch(IllegalStateException ignored) {}
         }
 
         ConfigurationManager configurationManager = getConfigurationManager();
