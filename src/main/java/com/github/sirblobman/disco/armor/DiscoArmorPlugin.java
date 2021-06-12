@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.sirblobman.api.configuration.ConfigurationManager;
 import com.github.sirblobman.api.core.CorePlugin;
-import com.github.sirblobman.api.core.plugin.ConfigurablePlugin;
 import com.github.sirblobman.api.language.LanguageManager;
+import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.api.update.UpdateManager;
 import com.github.sirblobman.api.utility.MessageUtility;
 import com.github.sirblobman.api.utility.VersionUtility;
@@ -42,7 +42,7 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
         configurationManager.saveDefault("language.yml");
 
         LanguageManager languageManager = getLanguageManager();
-        languageManager.saveDefaultLocales();
+        languageManager.saveDefaultLanguages();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
         configurationManager.reload("language.yml");
 
         LanguageManager languageManager = getLanguageManager();
-        languageManager.reloadLocales();
+        languageManager.reloadLanguages();
 
         registerTasks();
     }
