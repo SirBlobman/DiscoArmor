@@ -12,7 +12,7 @@ import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.api.xseries.XMaterial;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class GrayscalePattern extends Pattern {
+public final class GrayscalePattern extends DiscoArmorPattern {
     public GrayscalePattern(DiscoArmorPlugin plugin) {
         super(plugin, "grayscale");
     }
@@ -21,8 +21,9 @@ public class GrayscalePattern extends Pattern {
     public String getDisplayName() {
         return "&7Grayscale";
     }
+
     @Override
-    public Color getNextColor(Player player) {
+    protected Color getNextColor(Player player) {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int red = rng.nextInt(256);
         int green = rng.nextInt(256);
@@ -51,5 +52,4 @@ public class GrayscalePattern extends Pattern {
     protected ItemStack getMenuItem() {
         return XMaterial.GRAY_BANNER.parseItem();
     }
-
 }

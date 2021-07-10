@@ -21,23 +21,37 @@ import com.github.sirblobman.api.utility.Validate;
 import com.github.sirblobman.api.xseries.XMaterial;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public abstract class Pattern {
+public abstract class DiscoArmorPattern {
     private final String id;
     private final DiscoArmorPlugin plugin;
-    public Pattern(DiscoArmorPlugin plugin, String id) {
+
+    public DiscoArmorPattern(DiscoArmorPlugin plugin, String id) {
         this.plugin = Validate.notNull(plugin, "plugin must not be null!");
         this.id = Validate.notEmpty(id, "id cannot be empty or null!");
-    }
-
-    public DiscoArmorPlugin getPlugin() {
-        return this.plugin;
     }
 
     public final String getId() {
         return this.id;
     }
 
-    public final ItemStack createArmor(Player player, ArmorType armorType, Color color) {
+    public final ItemStack getMenuIcon() {
+        ItemStack item = getMenuItem();
+        ItemBuilder builder = (item == null ? new ItemBuilder(XMaterial.BARRIER) : new ItemBuilder(item));
+
+        String displayName = getDisplayName();
+        String displayNameColored = MessageUtility.color(displayName);
+        builder.withName(displayNameColored);
+
+        ItemFlag[] itemFlagArray = ItemFlag.values();
+        builder.withFlags(itemFlagArray);
+        return builder.build();
+    }
+
+    protected final DiscoArmorPlugin getPlugin() {
+        return this.plugin;
+    }
+
+    protected final ItemStack createArmor(Player player, ArmorType armorType, Color color) {
         DiscoArmorPlugin plugin = getPlugin();
         ConfigurationManager configurationManager = plugin.getConfigurationManager();
         YamlConfiguration configuration = configurationManager.get("config.yml");
@@ -57,7 +71,9 @@ public abstract class Pattern {
 
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         YamlConfiguration playerData = playerDataManager.get(player);
-        if(playerData.getBoolean("glowing")) builder.withGlowing();
+        if(playerData.getBoolean("glowing")) {
+            builder.withGlowing();
+        }
 
         ItemStack item = builder.build();
         MultiVersionHandler multiVersionHandler = plugin.getMultiVersionHandler();
@@ -65,21 +81,9 @@ public abstract class Pattern {
         return itemHandler.setCustomNBT(item, "disco", "armor");
     }
 
-    public final ItemStack getMenuIcon() {
-        ItemStack item = getMenuItem();
-        ItemBuilder builder = (item == null ? new ItemBuilder(XMaterial.BARRIER) : new ItemBuilder(item));
-
-        String displayName = getDisplayName();
-        String displayNameColored = MessageUtility.color(displayName);
-        builder.withName(displayNameColored);
-
-        ItemFlag[] itemFlagArray = ItemFlag.values();
-        builder.withFlags(itemFlagArray);
-        return builder.build();
-    }
-
     public abstract String getDisplayName();
-    public abstract Color getNextColor(Player player);
-    public abstract Map<ArmorType, ItemStack> getNextArmor(Player player);
+    protected abstract Color getNextColor(Player player);
     protected abstract ItemStack getMenuItem();
+
+    public abstract Map<ArmorType, ItemStack> getNextArmor(Player player);
 }

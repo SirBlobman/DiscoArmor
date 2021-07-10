@@ -10,10 +10,11 @@ import com.github.sirblobman.api.configuration.ConfigurationManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
-import com.github.sirblobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
-public class DiscoArmorMenu extends AbstractMenu {
+public final class DiscoArmorMenu extends AbstractMenu {
     private final DiscoArmorPlugin plugin;
+
     public DiscoArmorMenu(DiscoArmorPlugin plugin, Player player) {
         super(plugin, player);
         this.plugin = plugin;
@@ -35,14 +36,14 @@ public class DiscoArmorMenu extends AbstractMenu {
 
     @Override
     public ItemStack getItem(int slot) {
-        Pattern pattern = getPattern(slot);
+        DiscoArmorPattern pattern = getPattern(slot);
         if(pattern == null) return null;
         return pattern.getMenuIcon();
     }
 
     @Override
     public PatternButton getButton(int slot) {
-        Pattern pattern = getPattern(slot);
+        DiscoArmorPattern pattern = getPattern(slot);
         if(pattern == null) return null;
         return new PatternButton(this.plugin, pattern);
     }
@@ -52,9 +53,9 @@ public class DiscoArmorMenu extends AbstractMenu {
         return true;
     }
 
-    private Pattern getPattern(int slot) {
+    private DiscoArmorPattern getPattern(int slot) {
         PatternManager patternManager = this.plugin.getPatternManager();
-        List<Pattern> patternList = patternManager.getPatterns();
+        List<DiscoArmorPattern> patternList = patternManager.getPatterns();
         int patternListSize = patternList.size();
         if(slot < 0 || slot >= patternListSize) return null;
         return patternList.get(slot);

@@ -15,7 +15,7 @@ import com.github.sirblobman.api.utility.MessageUtility;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.menu.DiscoArmorMenu;
-import com.github.sirblobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -114,7 +114,7 @@ public class CommandDiscoArmor extends PlayerCommand {
 
         LanguageManager languageManager = getLanguageManager();
         PatternManager patternManager = this.plugin.getPatternManager();
-        Pattern pattern = patternManager.getPattern(patternId);
+        DiscoArmorPattern pattern = patternManager.getPattern(patternId);
         if(pattern == null) {
             Replacer replacer = message -> message.replace("{pattern}", patternId);
             languageManager.sendMessage(player, "error.invalid-pattern", replacer, true);

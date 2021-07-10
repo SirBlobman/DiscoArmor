@@ -1,3 +1,3 @@
-# DiscoArmor
-A spigot plugin with multi-colored armor  
-https://www.spigotmc.org/resources/60700/
+# Disco Armor
+**Warning!** If you are prone to epilepsy or seizures, do not use this armor!  
+[Spigot Page](https://www.spigotmc.org/resources/60700/)

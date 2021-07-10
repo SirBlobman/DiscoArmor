@@ -43,6 +43,7 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
 
         LanguageManager languageManager = getLanguageManager();
         languageManager.saveDefaultLanguages();
+        languageManager.reloadLanguages();
     }
 
     @Override
@@ -136,8 +137,9 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
         if(discoArmorTask != null) {
             try {
                 discoArmorTask.cancel();
-                discoArmorTask.disableAll();
             } catch(IllegalStateException ignored) {}
+
+            discoArmorTask.disableAll();
         }
 
         ConfigurationManager configurationManager = getConfigurationManager();

@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class OneColorPattern extends Pattern {
+public final class OneColorPattern extends DiscoArmorPattern {
     public OneColorPattern(DiscoArmorPlugin plugin) {
         super(plugin, "one_color");
     }
@@ -27,12 +27,10 @@ public class OneColorPattern extends Pattern {
     }
 
     @Override
-    public Color getNextColor(Player player) {
+    protected Color getNextColor(Player player) {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
-        int red = rng.nextInt(256);
-        int green = rng.nextInt(256);
-        int blue = rng.nextInt(256);
-        return Color.fromRGB(red, green, blue);
+        int randomColor = rng.nextInt(0xFFFFFF + 1);
+        return Color.fromRGB(randomColor);
     }
 
     @Override

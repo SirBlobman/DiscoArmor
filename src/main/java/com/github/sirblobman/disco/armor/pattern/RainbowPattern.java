@@ -1,7 +1,6 @@
 package com.github.sirblobman.disco.armor.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +16,19 @@ import org.bukkit.inventory.ItemStack;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class RainbowPattern extends Pattern {
-    private static final List<Color> RAINBOW_COLOR_LIST = Arrays.asList(
-            Color.fromRGB(255, 0, 0), // Red
-            Color.fromRGB(255, 165, 0), // Orange
-            Color.fromRGB(255, 255, 0), // Yellow
-            Color.fromRGB(0, 128, 0), // Green
-            Color.fromRGB(0, 0, 255), // Blue
-            Color.fromRGB(75, 0, 130), // Indigo
-            Color.fromRGB(238, 130, 238) // Violet
-    );
+public class RainbowPattern extends DiscoArmorPattern {
+    private final List<Color> rainbowColorList;
+
     public RainbowPattern(DiscoArmorPlugin plugin) {
         super(plugin, "rainbow");
+        this.rainbowColorList = new ArrayList<>();
+        this.rainbowColorList.add(Color.fromRGB(0xFF0000)); // Red
+        this.rainbowColorList.add(Color.fromRGB(0xFFA500)); // Orange
+        this.rainbowColorList.add(Color.fromRGB(0xFFFF00)); // Yellow
+        this.rainbowColorList.add(Color.fromRGB(0x008000)); // Green
+        this.rainbowColorList.add(Color.fromRGB(0x0000FF)); // Blue
+        this.rainbowColorList.add(Color.fromRGB(0x4B0082)); // Indigo
+        this.rainbowColorList.add(Color.fromRGB(0xEE82EE)); // Violet
     }
 
     @Override
@@ -37,10 +37,10 @@ public class RainbowPattern extends Pattern {
     }
 
     @Override
-    public Color getNextColor(Player player) {
-        int colorListSize = RAINBOW_COLOR_LIST.size();
+    protected Color getNextColor(Player player) {
+        int colorListSize = rainbowColorList.size();
         ThreadLocalRandom rng = ThreadLocalRandom.current();
-        return RAINBOW_COLOR_LIST.get(rng.nextInt(colorListSize));
+        return rainbowColorList.get(rng.nextInt(colorListSize));
     }
 
     @Override

@@ -21,11 +21,12 @@ import com.github.sirblobman.api.utility.ItemUtility;
 import com.github.sirblobman.api.utility.Validate;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
-import com.github.sirblobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
 public final class DiscoArmorTask extends BukkitRunnable {
     private final DiscoArmorPlugin plugin;
     private final Map<UUID, ItemStack[]> oldArmorMap;
+
     public DiscoArmorTask(DiscoArmorPlugin plugin) {
         this.plugin = Validate.notNull(plugin, "plugin must not be null!");
         this.oldArmorMap = new HashMap<>();
@@ -56,7 +57,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
         String patternName = configuration.getString("pattern");
 
         PatternManager patternManager = this.plugin.getPatternManager();
-        Pattern pattern = patternManager.getPattern(patternName);
+        DiscoArmorPattern pattern = patternManager.getPattern(patternName);
         if(pattern == null) {
             loadOldArmor(player);
             return;

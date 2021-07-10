@@ -12,21 +12,21 @@ import java.util.logging.Logger;
 
 import com.github.sirblobman.api.utility.Validate;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.pattern.Pattern;
+import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
 public final class PatternManager {
     private final DiscoArmorPlugin plugin;
-    private final Map<String, Pattern> patternMap;
+    private final Map<String, DiscoArmorPattern> patternMap;
     public PatternManager(DiscoArmorPlugin plugin) {
         this.plugin = Validate.notNull(plugin, "plugin must not be null!");
         this.patternMap = new LinkedHashMap<>();
     }
 
-    public void register(Class<? extends Pattern> patternClass) {
+    public void register(Class<? extends DiscoArmorPattern> patternClass) {
         Validate.notNull(patternClass, "patternClass must not be null!");
         try {
-            Constructor<? extends Pattern> constructor = patternClass.getDeclaredConstructor(DiscoArmorPlugin.class);
-            Pattern pattern = constructor.newInstance(this.plugin);
+            Constructor<? extends DiscoArmorPattern> constructor = patternClass.getDeclaredConstructor(DiscoArmorPlugin.class);
+            DiscoArmorPattern pattern = constructor.newInstance(this.plugin);
             String patternId = pattern.getId();
 
             if(this.patternMap.containsKey(patternId)) {
@@ -41,7 +41,7 @@ public final class PatternManager {
         }
     }
 
-    public void unregister(Pattern pattern) {
+    public void unregister(DiscoArmorPattern pattern) {
         String patternId = pattern.getId();
         this.patternMap.remove(patternId);
     }
@@ -51,12 +51,12 @@ public final class PatternManager {
         return new ArrayList<>(keySet);
     }
 
-    public List<Pattern> getPatterns() {
-        Collection<Pattern> patternCollection = this.patternMap.values();
+    public List<DiscoArmorPattern> getPatterns() {
+        Collection<DiscoArmorPattern> patternCollection = this.patternMap.values();
         return new ArrayList<>(patternCollection);
     }
 
-    public Pattern getPattern(String id) {
+    public DiscoArmorPattern getPattern(String id) {
         if(id == null) return null;
         return this.patternMap.getOrDefault(id, null);
     }

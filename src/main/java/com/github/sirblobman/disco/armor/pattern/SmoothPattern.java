@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +18,13 @@ import org.bukkit.inventory.meta.BannerMeta;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class SmoothPattern extends Pattern {
-    private static final Color DEFAULT_COLOR = Color.fromRGB(0, 0, 0);
+public final class SmoothPattern extends DiscoArmorPattern {
+    private final Color defaultColor;
     private final Map<UUID, Color> colorMap;
+
     public SmoothPattern(DiscoArmorPlugin plugin) {
         super(plugin, "smooth");
+        this.defaultColor = Color.fromRGB(0x000000);
         this.colorMap = new HashMap<>();
     }
 
@@ -31,8 +34,8 @@ public class SmoothPattern extends Pattern {
     }
 
     @Override
-    public Color getNextColor(Player player) {UUID uuid = player.getUniqueId();
-        Color currentColor = this.colorMap.getOrDefault(uuid, DEFAULT_COLOR);
+    protected Color getNextColor(Player player) {UUID uuid = player.getUniqueId();
+        Color currentColor = this.colorMap.getOrDefault(uuid, this.defaultColor);
         int red = currentColor.getRed();
         int green = currentColor.getGreen();
         int blue = currentColor.getBlue();
@@ -74,9 +77,11 @@ public class SmoothPattern extends Pattern {
     protected ItemStack getMenuItem() {
         ItemStack item = new ItemStack(Material.RED_BANNER);
         BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-        if(bannerMeta == null) throw new IllegalStateException("null banner meta!");
+        if(bannerMeta == null) {
+            throw new IllegalStateException("null banner meta!");
+        }
 
-        org.bukkit.block.banner.Pattern blueGradient = new org.bukkit.block.banner.Pattern(DyeColor.BLUE, PatternType.GRADIENT);
+        Pattern blueGradient = new Pattern(DyeColor.BLUE, PatternType.GRADIENT);
         bannerMeta.addPattern(blueGradient);
 
         item.setItemMeta(bannerMeta);
