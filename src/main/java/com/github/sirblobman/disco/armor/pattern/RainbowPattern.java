@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public class RainbowPattern extends DiscoArmorPattern {
+public final class RainbowPattern extends DiscoArmorPattern {
     private final List<Color> rainbowColorList;
 
     public RainbowPattern(DiscoArmorPlugin plugin) {

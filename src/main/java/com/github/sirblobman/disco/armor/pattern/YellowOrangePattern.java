@@ -41,7 +41,9 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
         int blue = currentColor.getBlue();
 
         green += 5;
-        if(green > 255) green = 128;
+        if(green > 255) {
+            green = 128;
+        }
 
         Color newColor = Color.fromRGB(red, green, blue);
         this.colorMap.put(uuid, newColor);

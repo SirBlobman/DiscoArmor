@@ -37,14 +37,20 @@ public final class DiscoArmorMenu extends AbstractMenu {
     @Override
     public ItemStack getItem(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
-        if(pattern == null) return null;
+        if(pattern == null) {
+            return null;
+        }
+
         return pattern.getMenuIcon();
     }
 
     @Override
     public PatternButton getButton(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
-        if(pattern == null) return null;
+        if(pattern == null) {
+            return null;
+        }
+
         return new PatternButton(this.plugin, pattern);
     }
 
@@ -57,16 +63,34 @@ public final class DiscoArmorMenu extends AbstractMenu {
         PatternManager patternManager = this.plugin.getPatternManager();
         List<DiscoArmorPattern> patternList = patternManager.getPatterns();
         int patternListSize = patternList.size();
-        if(slot < 0 || slot >= patternListSize) return null;
+        if(slot < 0 || slot >= patternListSize) {
+            return null;
+        }
+
         return patternList.get(slot);
     }
 
     private int getSize(int number) {
-        if(number <= 9) return 9;
-        if(number <= 18) return 18;
-        if(number <= 27) return 27;
-        if(number <= 36) return 36;
-        if(number <= 45) return 45;
+        if(number <= 9) {
+            return 9;
+        }
+
+        if(number <= 18) {
+            return 18;
+        }
+
+        if(number <= 27) {
+            return 27;
+        }
+
+        if(number <= 36) {
+            return 36;
+        }
+
+        if(number <= 45) {
+            return 45;
+        }
+
         return 54;
     }
 }

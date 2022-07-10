@@ -35,12 +35,16 @@ public final class DiscoArmorTask extends BukkitRunnable {
     @Override
     public void run() {
         Collection<? extends Player> onlinePlayerCollection = Bukkit.getOnlinePlayers();
-        onlinePlayerCollection.forEach(this::check);
+        for (Player player : onlinePlayerCollection) {
+            check(player);
+        }
     }
 
     public void disableAll() {
         Collection<? extends Player> onlinePlayerCollection = Bukkit.getOnlinePlayers();
-        onlinePlayerCollection.forEach(this::disable);
+        for (Player player : onlinePlayerCollection) {
+            disable(player);
+        }
     }
 
     public void disable(Player player) {
@@ -70,7 +74,9 @@ public final class DiscoArmorTask extends BukkitRunnable {
 
     private void saveOldArmor(Player player) {
         UUID uuid = player.getUniqueId();
-        if(this.oldArmorMap.containsKey(uuid)) return;
+        if(this.oldArmorMap.containsKey(uuid)) {
+            return;
+        }
 
         ItemStack[] oldArmor = getArmor(player);
         this.oldArmorMap.put(uuid, oldArmor);
@@ -79,7 +85,9 @@ public final class DiscoArmorTask extends BukkitRunnable {
     private void loadOldArmor(Player player) {
         UUID uuid = player.getUniqueId();
         ItemStack[] oldArmor = this.oldArmorMap.remove(uuid);
-        if(oldArmor == null) return;
+        if(oldArmor == null) {
+            return;
+        }
 
         PlayerInventory playerInventory = player.getInventory();
         playerInventory.setArmorContents(oldArmor);
@@ -110,12 +118,11 @@ public final class DiscoArmorTask extends BukkitRunnable {
 
     private void setArmor(Player player, ArmorType armorType, ItemStack armor) {
         PlayerInventory playerInventory = player.getInventory();
-        switch(armorType) {
-            case HELMET: playerInventory.setHelmet(armor); break;
-            case CHESTPLATE: playerInventory.setChestplate(armor); break;
-            case LEGGINGS: playerInventory.setLeggings(armor); break;
-            case BOOTS: playerInventory.setBoots(armor); break;
-            default: break;
+        switch (armorType) {
+            case HELMET -> playerInventory.setHelmet(armor);
+            case CHESTPLATE -> playerInventory.setChestplate(armor);
+            case LEGGINGS -> playerInventory.setLeggings(armor);
+            case BOOTS -> playerInventory.setBoots(armor);
         }
     }
 }

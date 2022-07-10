@@ -36,13 +36,11 @@ public final class OldGloryPattern extends DiscoArmorPattern {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int choice = rng.nextInt(3);
 
-        switch(choice) {
-            case 0: return this.oldGloryRed;
-            case 1: return this.oldGloryWhite;
-            default: break;
-        }
-
-        return oldGloryBlue;
+        return switch(choice) {
+            case 0 -> this.oldGloryRed;
+            case 1 -> this.oldGloryWhite;
+            default -> this.oldGloryBlue;
+        };
     }
 
     @Override

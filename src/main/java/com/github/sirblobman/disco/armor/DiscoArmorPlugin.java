@@ -26,7 +26,7 @@ import com.github.sirblobman.disco.armor.pattern.SmoothPattern;
 import com.github.sirblobman.disco.armor.pattern.YellowOrangePattern;
 import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
 
-public class DiscoArmorPlugin extends ConfigurablePlugin {
+public final class DiscoArmorPlugin extends ConfigurablePlugin {
     private final PatternManager patternManager;
     private DiscoArmorTask discoArmorTask;
 
@@ -42,8 +42,7 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
         configurationManager.saveDefault("language.yml");
 
         LanguageManager languageManager = getLanguageManager();
-        languageManager.saveDefaultLanguages();
-        languageManager.reloadLanguages();
+        languageManager.saveDefaultLanguageFiles();
     }
 
     @Override
@@ -55,14 +54,14 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
             logger.warning("You should not be using it on " + VersionUtility.getMinecraftVersion());
         }
 
-        CorePlugin corePlugin = JavaPlugin.getPlugin(CorePlugin.class);
-        UpdateManager updateManager = corePlugin.getUpdateManager();
-        updateManager.addResource(this, 60700L);
-
+        reloadConfiguration();
         registerPatterns();
         registerCommands();
         registerListeners();
-        registerTasks();
+
+        CorePlugin corePlugin = JavaPlugin.getPlugin(CorePlugin.class);
+        UpdateManager updateManager = corePlugin.getUpdateManager();
+        updateManager.addResource(this, 60700L);
 
         ConfigurationManager configurationManager = getConfigurationManager();
         YamlConfiguration configuration = configurationManager.get("config.yml");
@@ -93,23 +92,23 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
         }
     }
 
+    @Override
+    protected void reloadConfiguration() {
+        ConfigurationManager configurationManager = getConfigurationManager();
+        configurationManager.reload("config.yml");
+
+        LanguageManager languageManager = getLanguageManager();
+        languageManager.reloadLanguageFiles();
+
+        registerTasks();
+    }
+
     public PatternManager getPatternManager() {
         return this.patternManager;
     }
 
     public DiscoArmorTask getDiscoArmorTask() {
         return this.discoArmorTask;
-    }
-
-    public void onReload() {
-        ConfigurationManager configurationManager = getConfigurationManager();
-        configurationManager.reload("config.yml");
-        configurationManager.reload("language.yml");
-
-        LanguageManager languageManager = getLanguageManager();
-        languageManager.reloadLanguages();
-
-        registerTasks();
     }
 
     private void registerPatterns() {
@@ -128,8 +127,7 @@ public class DiscoArmorPlugin extends ConfigurablePlugin {
     }
 
     private void registerListeners() {
-        PluginManager manager = Bukkit.getPluginManager();
-        manager.registerEvents(new ListenerDiscoArmor(this), this);
+        new ListenerDiscoArmor(this).register();
     }
 
     private void registerTasks() {

@@ -25,7 +25,8 @@ public final class PatternManager {
     public void register(Class<? extends DiscoArmorPattern> patternClass) {
         Validate.notNull(patternClass, "patternClass must not be null!");
         try {
-            Constructor<? extends DiscoArmorPattern> constructor = patternClass.getDeclaredConstructor(DiscoArmorPlugin.class);
+            Constructor<? extends DiscoArmorPattern> constructor = patternClass.getDeclaredConstructor(
+                    DiscoArmorPlugin.class);
             DiscoArmorPattern pattern = constructor.newInstance(this.plugin);
             String patternId = pattern.getId();
 
@@ -57,7 +58,10 @@ public final class PatternManager {
     }
 
     public DiscoArmorPattern getPattern(String id) {
-        if(id == null) return null;
+        if(id == null) {
+            return null;
+        }
+
         return this.patternMap.getOrDefault(id, null);
     }
 }
