@@ -29,7 +29,7 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
 
     @Override
     public String getDisplayName() {
-        return "<#FFFF00>Yellow</#FF0000> <#FFA500>Orange</#FFA500>";
+        return "<#FFFF00>Yellow</#FFFF00> <#FFA500>Orange</#FFA500>";
     }
 
     @Override

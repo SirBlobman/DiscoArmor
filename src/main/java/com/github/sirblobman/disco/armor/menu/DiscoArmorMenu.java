@@ -32,7 +32,7 @@ public final class DiscoArmorMenu extends AbstractMenu {
         Player player = getPlayer();
         DiscoArmorPlugin plugin = getDiscoArmorPlugin();
         LanguageManager languageManager = plugin.getLanguageManager();
-        return languageManager.getMessageLegacy(player, "menu.title", null);
+        return languageManager.getMessageLegacy(player, "menu-title", null);
     }
 
     @Override

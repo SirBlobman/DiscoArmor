@@ -42,7 +42,7 @@ broadcast:
   enabled: "<rainbow><obfuscated>i</obfuscated>Disco Armor<obfuscated>i</obfuscated></rainbow>"
   disabled: "<bold><dark_red>:(</dark_red></bold>"
 
-menu-title: "<underline>Disco Armor Menu</underline>"
+menu-title: "<underlined>Disco Armor Menu</underlined>"
 armor-item:
   display-name: "<rainbow>Disco Armor</rainbow>"
   lore:
