@@ -1,12 +1,12 @@
 [SIZE=5][B]Supported Spigot Versions:[/B][/SIZE]
-1.19
+1.19.2
 
 [SIZE=5][B][COLOR=#FF0000]Description:[/COLOR][/B][/SIZE]
 Disco Armor is a fun plugin that adds leather armor with different colors.
 
 [SIZE=5][B][COLOR=#FF0000]Dependencies:[/COLOR][/B][/SIZE]
 [LIST]
-[*] [URL='https://www.spigotmc.org/resources/83189/']SirBlobmanCore[/URL]
+[*][URL='https://www.spigotmc.org/resources/83189/']BlueSlimeCore[/URL]
 [/LIST]
 
 [SIZE=5][B][COLOR=#FF0000]Features:[/COLOR][/B][/SIZE]

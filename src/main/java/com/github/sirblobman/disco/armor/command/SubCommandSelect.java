@@ -45,7 +45,7 @@ public final class SubCommandSelect extends PlayerCommand {
         DiscoArmorPattern pattern = patternManager.getPattern(patternId);
         if(pattern == null) {
             Replacer replacer = new SimpleReplacer("{pattern}", patternId);
-            sendMessage(player, "error.invalid-pattern", replacer, true);
+            sendMessage(player, "error.invalid-pattern", replacer);
             return true;
         }
 
@@ -58,7 +58,7 @@ public final class SubCommandSelect extends PlayerCommand {
         String displayNameColored = MessageUtility.color(displayName);
 
         Replacer replacer = new SimpleReplacer("{pattern}", displayNameColored);
-        sendMessage(player, "command.change-type", replacer, true);
+        sendMessage(player, "command.change-type", replacer);
         return true;
     }
 }

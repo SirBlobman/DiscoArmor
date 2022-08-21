@@ -30,7 +30,7 @@ public final class SmoothPattern extends DiscoArmorPattern {
 
     @Override
     public String getDisplayName() {
-        return "&dSmooth";
+        return "<purple>Smooth</purple>";
     }
 
     @Override

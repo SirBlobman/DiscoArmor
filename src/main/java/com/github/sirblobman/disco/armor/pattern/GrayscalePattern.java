@@ -19,7 +19,7 @@ public final class GrayscalePattern extends DiscoArmorPattern {
 
     @Override
     public String getDisplayName() {
-        return "&7Grayscale";
+        return "<gray>Grayscale</gray>";
     }
 
     @Override

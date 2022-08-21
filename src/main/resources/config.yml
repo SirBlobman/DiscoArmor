@@ -12,17 +12,10 @@ armor-speed: 5
 # Should disco armor be disabled if a player takes damage?
 disable-on-damage: true
 
+# Requires 'disable-on-damage: true'
+# Should Disco Armor prevent the first hit when a player is wearing disco armor?
+prevent-first-hit: true
+
 # Should disco armor have a LUCK enchantment and a HIDE_ENCHANTS flag?
 # (This is the default option, players can change their own armor by typing '/disco-armor glow')
 glowing: false
-
-menu-title: "&nDisco Armor Menu&r"
-display-name: "&1D&2I&3S&4C&5O&r Armor"
-lore:
-  - "&7This is an awesome armor set,"
-  - "&7but you can only remove it by"
-  - "&7typing &e/disco-armor off&7."
-
-broadcast:
-  enabled: "&b&ki&1&lD&2&lI&3&lS&4&lC&5&lO&b&ki&r"
-  disabled: "&4&l:(&r"

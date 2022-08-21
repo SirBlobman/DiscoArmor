@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.language.Replacer;
+import com.github.sirblobman.api.language.SimpleReplacer;
 import com.github.sirblobman.api.menu.button.QuickButton;
-import com.github.sirblobman.api.utility.MessageUtility;
 import com.github.sirblobman.api.utility.Validate;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
@@ -21,7 +21,11 @@ public final class PatternButton extends QuickButton {
         this.pattern = Validate.notNull(pattern, "pattern must not be null!");
     }
 
-    public DiscoArmorPattern getPattern() {
+    private DiscoArmorPlugin getPlugin() {
+        return this.plugin;
+    }
+
+    private DiscoArmorPattern getPattern() {
         return this.pattern;
     }
 
@@ -32,14 +36,15 @@ public final class PatternButton extends QuickButton {
         DiscoArmorPattern pattern = getPattern();
         String patternId = pattern.getId();
 
-        PlayerDataManager playerDataManager = this.plugin.getPlayerDataManager();
+        DiscoArmorPlugin plugin = getPlugin();
+        PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         configuration.set("pattern", patternId);
         playerDataManager.save(player);
 
-        LanguageManager languageManager = this.plugin.getLanguageManager();
-        String patternDisplayName = MessageUtility.color(pattern.getDisplayName());
-        Replacer replacer = message -> message.replace("{pattern}",patternDisplayName);
-        languageManager.sendMessage(player, "command.change-type", replacer, true);
+        String patternDisplayName = pattern.getDisplayName();
+        LanguageManager languageManager = plugin.getLanguageManager();
+        Replacer replacer = new SimpleReplacer("{pattern}", patternDisplayName);
+        languageManager.sendMessage(player, "command.change-type", replacer);
     }
 }

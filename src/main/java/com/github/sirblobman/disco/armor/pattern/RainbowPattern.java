@@ -33,14 +33,14 @@ public final class RainbowPattern extends DiscoArmorPattern {
 
     @Override
     public String getDisplayName() {
-        return "&aR&ba&ci&dn&eb&fo&9w";
+        return "<rainbow>Rainbow</rainbow>";
     }
 
     @Override
     protected Color getNextColor(Player player) {
-        int colorListSize = rainbowColorList.size();
+        int colorListSize = this.rainbowColorList.size();
         ThreadLocalRandom rng = ThreadLocalRandom.current();
-        return rainbowColorList.get(rng.nextInt(colorListSize));
+        return this.rainbowColorList.get(rng.nextInt(colorListSize));
     }
 
     @Override

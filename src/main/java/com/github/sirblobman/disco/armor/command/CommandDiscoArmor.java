@@ -11,7 +11,6 @@ import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 public class CommandDiscoArmor extends Command {
     public CommandDiscoArmor(DiscoArmorPlugin plugin) {
         super(plugin, "disco-armor");
-
         addSubCommand(new SubCommandGlow(plugin));
         addSubCommand(new SubCommandOff(plugin));
         addSubCommand(new SubCommandOn(plugin));
@@ -26,7 +25,7 @@ public class CommandDiscoArmor extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
-        sendMessage(sender, "command.usage", null, true);
+        sendMessage(sender, "command.usage", null);
         return true;
     }
 }

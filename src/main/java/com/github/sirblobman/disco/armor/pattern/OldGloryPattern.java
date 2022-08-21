@@ -21,14 +21,14 @@ public final class OldGloryPattern extends DiscoArmorPattern {
 
     public OldGloryPattern(DiscoArmorPlugin plugin) {
         super(plugin, "old_glory");
-        this.oldGloryRed = Color.fromRGB(0xBF0A30);
+        this.oldGloryRed = Color.fromRGB(0xB31942);
         this.oldGloryWhite = Color.fromRGB(0xFFFFFF);
-        this.oldGloryBlue = Color.fromRGB(0x002868);
+        this.oldGloryBlue = Color.fromRGB(0x0A3161);
     }
 
     @Override
     public String getDisplayName() {
-        return "&9Old &cGlory";
+        return "<gradient:#B31942:#FFFFFF:#0A3161>Old Glory</gradient>";
     }
 
     @Override

@@ -8,7 +8,7 @@ version: "${bukkit.plugin.version}"
 api-version: "1.19"
 
 depend:
-  - "SirBlobmanCore"
+  - "BlueSlimeCore"
 
 authors:
   - "${bukkit.plugin.author}"

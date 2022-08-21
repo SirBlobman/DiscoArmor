@@ -1,7 +1,6 @@
 package com.github.sirblobman.disco.armor.manager;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,19 +16,26 @@ import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 public final class PatternManager {
     private final DiscoArmorPlugin plugin;
     private final Map<String, DiscoArmorPattern> patternMap;
+
     public PatternManager(DiscoArmorPlugin plugin) {
         this.plugin = Validate.notNull(plugin, "plugin must not be null!");
         this.patternMap = new LinkedHashMap<>();
     }
 
+    private DiscoArmorPlugin getPlugin() {
+        return this.plugin;
+    }
+
     public void register(Class<? extends DiscoArmorPattern> patternClass) {
         Validate.notNull(patternClass, "patternClass must not be null!");
+
         try {
             Constructor<? extends DiscoArmorPattern> constructor = patternClass.getDeclaredConstructor(
                     DiscoArmorPlugin.class);
-            DiscoArmorPattern pattern = constructor.newInstance(this.plugin);
-            String patternId = pattern.getId();
+            DiscoArmorPlugin plugin = getPlugin();
+            DiscoArmorPattern pattern = constructor.newInstance(plugin);
 
+            String patternId = pattern.getId();
             if(this.patternMap.containsKey(patternId)) {
                 String message = ("An armor pattern with id '" + patternId + "' is already registered.");
                 throw new IllegalArgumentException(message);
@@ -49,19 +55,16 @@ public final class PatternManager {
 
     public List<String> getPatternIds() {
         Set<String> keySet = this.patternMap.keySet();
-        return new ArrayList<>(keySet);
+        return List.copyOf(keySet);
     }
 
     public List<DiscoArmorPattern> getPatterns() {
         Collection<DiscoArmorPattern> patternCollection = this.patternMap.values();
-        return new ArrayList<>(patternCollection);
+        return List.copyOf(patternCollection);
     }
 
     public DiscoArmorPattern getPattern(String id) {
-        if(id == null) {
-            return null;
-        }
-
+        Validate.notNull(id, "id must not be null!");
         return this.patternMap.getOrDefault(id, null);
     }
 }

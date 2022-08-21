@@ -23,7 +23,7 @@ public final class OneColorPattern extends DiscoArmorPattern {
 
     @Override
     public String getDisplayName() {
-        return "&eOne Color";
+        return "<yellow>One Color</yellow>";
     }
 
     @Override

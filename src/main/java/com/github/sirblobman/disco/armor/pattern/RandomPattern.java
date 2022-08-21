@@ -1,14 +1,12 @@
 package com.github.sirblobman.disco.armor.pattern;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -25,14 +23,7 @@ public final class RandomPattern extends DiscoArmorPattern {
 
     @Override
     public String getDisplayName() {
-        ChatColor[] chatColorArray = ChatColor.values();
-        ChatColor[] colorArray = Arrays.stream(chatColorArray).filter(ChatColor::isColor).toArray(ChatColor[]::new);
-        int colorArrayLength = colorArray.length;
-
-        ThreadLocalRandom rng = ThreadLocalRandom.current();
-        int colorIndex = rng.nextInt(colorArrayLength);
-        ChatColor randomColor = colorArray[colorIndex];
-        return (randomColor + "Random Color");
+        return "<rainbow:!>Random Color</rainbow>";
     }
 
     @Override

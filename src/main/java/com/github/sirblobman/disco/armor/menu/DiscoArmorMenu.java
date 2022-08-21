@@ -2,11 +2,10 @@ package com.github.sirblobman.disco.armor.menu;
 
 import java.util.List;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.sirblobman.api.configuration.ConfigurationManager;
+import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
@@ -28,10 +27,12 @@ public final class DiscoArmorMenu extends AbstractMenu {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public String getTitle() {
-        ConfigurationManager configurationManager = this.plugin.getConfigurationManager();
-        YamlConfiguration configuration = configurationManager.get("config.yml");
-        return configuration.getString("menu-title");
+        Player player = getPlayer();
+        DiscoArmorPlugin plugin = getDiscoArmorPlugin();
+        LanguageManager languageManager = plugin.getLanguageManager();
+        return languageManager.getMessageLegacy(player, "menu.title", null);
     }
 
     @Override
@@ -51,7 +52,8 @@ public final class DiscoArmorMenu extends AbstractMenu {
             return null;
         }
 
-        return new PatternButton(this.plugin, pattern);
+        DiscoArmorPlugin plugin = getDiscoArmorPlugin();
+        return new PatternButton(plugin, pattern);
     }
 
     @Override
@@ -59,10 +61,16 @@ public final class DiscoArmorMenu extends AbstractMenu {
         return true;
     }
 
+    private DiscoArmorPlugin getDiscoArmorPlugin() {
+        return this.plugin;
+    }
+
     private DiscoArmorPattern getPattern(int slot) {
-        PatternManager patternManager = this.plugin.getPatternManager();
+        DiscoArmorPlugin plugin = getDiscoArmorPlugin();
+        PatternManager patternManager = plugin.getPatternManager();
         List<DiscoArmorPattern> patternList = patternManager.getPatterns();
         int patternListSize = patternList.size();
+
         if(slot < 0 || slot >= patternListSize) {
             return null;
         }
