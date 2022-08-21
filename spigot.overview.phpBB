@@ -11,11 +11,11 @@ Disco Armor is a fun plugin that adds leather armor with different colors.
 
 [SIZE=5][B][COLOR=#FF0000]Features:[/COLOR][/B][/SIZE]
 [LIST]
-[*] Seven different disco armor patterns
-[*] Configurable color changing speed
-[*] Steal and drop prevention with configurable message
-[*] Automatically save and return previous armor if player is damaged
-[*] Configurable messages, lores, and armor display name
+[*]Seven different disco armor patterns
+[*]Configurable color changing speed
+[*]Steal and drop prevention with configurable message
+[*]Automatically save and return previous armor if player is damaged
+[*]Configurable messages, lores, and armor display name
 [/LIST]
 
 [SIZE=5][B][COLOR=#FF0000]Screenshot:[/COLOR][/B][/SIZE]
@@ -28,7 +28,8 @@ Disco Armor is a fun plugin that adds leather armor with different colors.
 [/LIST]
 
 [SIZE=5][B][COLOR=#FF0000]Default Config:[/COLOR][/B][/SIZE]
-[SPOILER="config.yml"][CODE=YAML]
+[SPOILER="config.yml"]
+[CODE=YAML]
 # Should the plugin be allowed to check for updates?
 update-checker: true
 
@@ -43,25 +44,19 @@ armor-speed: 5
 # Should disco armor be disabled if a player takes damage?
 disable-on-damage: true
 
+# Requires 'disable-on-damage: true'
+# Should Disco Armor prevent the first hit when a player is wearing disco armor?
+prevent-first-hit: true
+
 # Should disco armor have a LUCK enchantment and a HIDE_ENCHANTS flag?
 # (This is the default option, players can change their own armor by typing '/disco-armor glow')
 glowing: false
-
-menu-title: "&nDisco Armor Menu&r"
-display-name: "&1D&2I&3S&4C&5O&r Armor"
-lore:
-  - "&7This is an awesome armor set,"
-  - "&7but you can only remove it by"
-  - "&7typing &e/disco-armor off&7."
-
-broadcast:
-  enabled: "&b&ki&1&lD&2&lI&3&lS&4&lC&5&lO&b&ki&r"
-  disabled: "&4&l:(&r"
-[/CODE][/SPOILER]
+[/CODE]
+[/SPOILER]
 
 [SIZE=5][B][COLOR=#FF0000]Support:[/COLOR][/B][/SIZE]
 If you need a feature added or are having issues, please join my discord by clicking the image below:
-[URL="https://discord.gg/XMq2agT"][IMG]https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png[/IMG][/URL]
+[URL='https://discord.gg/XMq2agT'][IMG]https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png[/IMG][/URL]
 
 [SIZE=5][B][COLOR=#FF0000]Extra Information:[/COLOR][/B][/SIZE]
 Please DO NOT leave bugs or error logs as reviews.
