@@ -16,8 +16,7 @@ authors:
 commands:
   disco-armor:
     description: "Open the Disco Armor menu to edit your armor."
-    permission: "disco-armor.command.disco-armor"
-    usage: "/<command> on/off/menu/glow"
+    usage: "/<command> help"
     aliases:
       - "discoarmor"
       - "disco"
@@ -28,10 +27,18 @@ commands:
 permissions:
   disco-armor.command.disco-armor:
     description: "Allows access to the '/disco-armor' command."
+    default: true
+    children:
+      - "disco-armor.command.disco-armor.glow"
+      - "disco-armor.command.disco-armor.help"
+      - "disco-armor.command.disco-armor.off"
+      - "disco-armor.command.disco-armor.on"
+      - "disco-armor.command.disco-armor.select"
+
+  disco-armor.command.disco-armor.admin:
+    description: "Allows access to administrator commands."
     default: op
     children:
-      - "disco-armor.command.disco-armor.reload"
-
-  disco-armor.command.disco-armor.reload:
-    description: "Allows access to reloading the configuration files."
-    default: op
+      - "disco-armor.command.disco-armor.admin.off"
+      - "disco-armor.command.disco-armor.admin.on"
+      - "disco-armor.command.disco-armor.admin.reload"

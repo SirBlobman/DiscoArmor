@@ -7,14 +7,17 @@ import org.bukkit.command.CommandSender;
 
 import com.github.sirblobman.api.command.Command;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.command.admin.SubCommandAdmin;
 
 public class CommandDiscoArmor extends Command {
     public CommandDiscoArmor(DiscoArmorPlugin plugin) {
         super(plugin, "disco-armor");
+        setPermissionName("disco-armor.command.disco-armor");
+        addSubCommand(new SubCommandAdmin(plugin));
         addSubCommand(new SubCommandGlow(plugin));
+        addSubCommand(new SubCommandHelp(plugin));
         addSubCommand(new SubCommandOff(plugin));
         addSubCommand(new SubCommandOn(plugin));
-        addSubCommand(new SubCommandReload(plugin));
         addSubCommand(new SubCommandSelect(plugin));
     }
 
@@ -25,7 +28,6 @@ public class CommandDiscoArmor extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String[] args) {
-        sendMessage(sender, "command.usage", null);
-        return true;
+        return false;
     }
 }

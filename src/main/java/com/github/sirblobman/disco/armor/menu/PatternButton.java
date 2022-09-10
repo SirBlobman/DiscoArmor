@@ -31,19 +31,25 @@ public final class PatternButton extends QuickButton {
 
     @Override
     public void onLeftClick(Player player, boolean shift) {
-        player.closeInventory();
-
+        DiscoArmorPlugin plugin = getPlugin();
+        LanguageManager languageManager = plugin.getLanguageManager();
         DiscoArmorPattern pattern = getPattern();
         String patternId = pattern.getId();
 
-        DiscoArmorPlugin plugin = getPlugin();
+        String permissionName = ("disco-armor.pattern." + patternId);
+        if(!player.hasPermission(permissionName)) {
+            Replacer replacer = new SimpleReplacer("{pattern}", patternId);
+            languageManager.sendMessage(player, "error.no-pattern-permission", replacer);
+            return;
+        }
+
+        player.closeInventory();
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         configuration.set("pattern", patternId);
         playerDataManager.save(player);
 
         String patternDisplayName = pattern.getDisplayName();
-        LanguageManager languageManager = plugin.getLanguageManager();
         Replacer replacer = new SimpleReplacer("{pattern}", patternDisplayName);
         languageManager.sendMessage(player, "command.change-type", replacer);
     }

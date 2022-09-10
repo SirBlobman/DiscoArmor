@@ -1,4 +1,4 @@
-package com.github.sirblobman.disco.armor.command;
+package com.github.sirblobman.disco.armor.command.admin;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,10 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.sirblobman.api.command.Command;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public final class SubCommandReload extends Command {
-    public SubCommandReload(DiscoArmorPlugin plugin) {
+final class SubCommandAdminReload extends Command {
+    public SubCommandAdminReload(DiscoArmorPlugin plugin) {
         super(plugin, "reload");
-        setPermissionName("disco-armor.reload");
+        setPermissionName("disco-armor.command.disco-armor.admin.reload");
     }
 
     @Override
@@ -25,7 +25,7 @@ public final class SubCommandReload extends Command {
         JavaPlugin plugin = getPlugin();
         plugin.reloadConfig();
 
-        sendMessage(sender, "command.reload-success", null);
+        sendMessage(sender, "command.admin.reload-success", null);
         return true;
     }
 }

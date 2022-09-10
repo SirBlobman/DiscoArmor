@@ -15,11 +15,12 @@ import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
-public final class SubCommandSelect extends PlayerCommand {
+final class SubCommandSelect extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
 
     public SubCommandSelect(DiscoArmorPlugin plugin) {
         super(plugin, "select");
+        setPermissionName("disco-armor.command.disco-armor.select");
         this.plugin = plugin;
     }
 
@@ -46,6 +47,13 @@ public final class SubCommandSelect extends PlayerCommand {
         if(pattern == null) {
             Replacer replacer = new SimpleReplacer("{pattern}", patternId);
             sendMessage(player, "error.invalid-pattern", replacer);
+            return true;
+        }
+
+        String permissionName = ("disco-armor.pattern." + patternId);
+        if(!player.hasPermission(permissionName)) {
+            Replacer replacer = new SimpleReplacer("{pattern}", patternId);
+            sendMessage(player, "error.no-pattern-permission", replacer);
             return true;
         }
 

@@ -15,7 +15,8 @@ Disco Armor is a fun plugin that adds leather armor with different colors.
 [*]Configurable color changing speed
 [*]Steal and drop prevention with configurable message
 [*]Automatically save and return previous armor if player is damaged
-[*]Configurable messages, lores, and armor display name
+[*]Configurable messages, armor lore, and armor display name
+[*]Administrator commands to change and disable player armor.
 [/LIST]
 
 [SIZE=5][B][COLOR=#FF0000]Screenshot:[/COLOR][/B][/SIZE]
@@ -23,15 +24,28 @@ Disco Armor is a fun plugin that adds leather armor with different colors.
 
 [SIZE=5][B][COLOR=#FF0000]Permissions:[/COLOR][/B][/SIZE]
 [LIST]
-[*][B]disco-armor.command.disco-armor[/B]: Allows access to the '/disco-armor' command.
-[*][B]disco-armor.reload[/B]: Allows access to the '/disco-armor reload' command.
+[*][B]disco-armor.command.disco-armor[/B]: Allows access to the player commands.
+[*][B]disco-armor.command.disco-armor.admin[/B]: Allows access to the administrator commands.
+[*][B]disco-armor.pattern.<pattern>[/B]: Allows access to the specified pattern.
+[/LIST]
+
+[SIZE=5][B][COLOR=#FF0000]Commands:[/COLOR][/B][/SIZE]
+[LIST]
+[*][B]/disco-armor glow[/B]: Toggle the enchantment effect on your armor.
+[*][B]/disco-armor off[/B]: Disable your disco armor.
+[*][B]/disco-armor on[/B]: Open the menu to choose a pattern.
+[*][B]/disco-armor select <pattern>[/B]: Manually choose an armor type.
+[*][B]/disco-armor admin off <player>[/B]: Force a player to stop using disco armor.
+[*][B]/disco-armor admin on <player> <pattern>[/B]: Force a player to use disco armor.
+[*][B]/disco-armor admin reload[/B]: Reload the configuration files.
 [/LIST]
 
 [SIZE=5][B][COLOR=#FF0000]Default Config:[/COLOR][/B][/SIZE]
 [SPOILER="config.yml"]
 [CODE=YAML]
-# Should the plugin be allowed to check for updates?
-update-checker: true
+# Should the plugin send extra debug messages to the console?
+# Make sure this option is enabled when reporting a bug.
+debug-mode: false
 
 # How long (in ticks) should the time be between color changes?
 # 1 = once per tick

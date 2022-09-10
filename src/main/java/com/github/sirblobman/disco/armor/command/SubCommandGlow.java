@@ -10,11 +10,12 @@ import com.github.sirblobman.api.command.PlayerCommand;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-public final class SubCommandGlow extends PlayerCommand {
+final class SubCommandGlow extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
 
     public SubCommandGlow(DiscoArmorPlugin plugin) {
         super(plugin, "glow");
+        setPermissionName("disco-armor.command.disco-armor.glow");
         this.plugin = plugin;
     }
 

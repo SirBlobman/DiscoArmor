@@ -9,11 +9,12 @@ import com.github.sirblobman.api.command.PlayerCommand;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.menu.DiscoArmorMenu;
 
-public final class SubCommandOn extends PlayerCommand {
+final class SubCommandOn extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
 
     public SubCommandOn(DiscoArmorPlugin plugin) {
         super(plugin, "on");
+        setPermissionName("disco-armor.command.disco-armor.on");
         this.plugin = plugin;
     }
 

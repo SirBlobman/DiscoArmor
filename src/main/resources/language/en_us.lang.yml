@@ -22,21 +22,33 @@ decimal-format: "0.00"
 
 error:
   player-only: "<red>Only players can execute this command.</red>"
+  invalid-target: "<red><gray>{target}</gray> is not online or does not exist.</red>"
   invalid-pattern: "<red><gray>{pattern}</gray> is not a valid pattern.</red>"
   prevent-removal: "<red>You are not allowed to remove your disco armor.</red>"
+  no-pattern-permission: "<red>You do not have access to the <gray>{pattern}</gray> permission.</red>"
 
 glow:
   enabled: "<gray>Glow Effect:</gray> <green>ON</green>"
   disabled: "<gray>Glow Effect:</gray> <red>OFF</red>"
 
+help-player:
+  help: "<white>/disco-armor help</white><gray>: View the list of available commands.</gray>"
+  glow: "<white>/disco-armor glow</white><gray>: Toggle the enchantment effect on your armor.</gray>"
+  'off': "<white>/disco-armor off</white><gray>: Disable your disco armor.</gray>"
+  'on': "<white>/disco-armor on</white><gray>: Open the menu to choose a pattern.</gray>"
+  select: "<white>/disco-armor select \\<pattern></white><gray>: Manually choose an armor type.</gray>"
+
+help-admin:
+  'off': "<white>/disco-armor admin off \\<player></white><gray>: Force a player to stop using disco armor.</gray>"
+  'on': "<white>/disco-armor admin on \\<player> \\<pattern></white><gray>: Force a player to use disco armor.</gray>"
+  reload: "<white>/disco-armor admin reload</white><gray>: Reload the configuration files.</gray>"
+
 command:
-  usage:
-    - "<white>/disco-armor on</white><gray>: Open the menu to choose a pattern.</gray>"
-    - "<white>/disco-armor off</white><gray>: Disable your disco armor.</gray>"
-    - "<white>/disco-armor glow</white><gray>: Toggle the enchantment effect on your armor.</gray>"
-    - "<white>/disco-armor select</white><gray>: Manually choose an armor type.</gray>"
-  reload-success: "<green>Successfully reloaded the configuration files.</green>"
   change-type: "<green>Successfully changed your armor pattern to <gray>{pattern}</gray>.</green>"
+  admin:
+    reload-success: "<green>Successfully reloaded the configuration files.</green>"
+    disabled: "<green>Disabled the disco armor for <gray>{target}</gray>.</green>"
+    change-type: "<green>Set the armor pattern of <gray>{target}</gray> to <gray>{pattern}</gray>.</green>"
 
 broadcast:
   enabled: "<rainbow><obfuscated>i</obfuscated>Disco Armor<obfuscated>i</obfuscated></rainbow>"

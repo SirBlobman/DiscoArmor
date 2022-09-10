@@ -1,5 +1,6 @@
-# Should the plugin be allowed to check for updates?
-update-checker: true
+# Should the plugin send extra debug messages to the console?
+# Make sure this option is enabled when reporting a bug.
+debug-mode: false
 
 # How long (in ticks) should the time be between color changes?
 # 1 = once per tick
