@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.sirblobman.api.adventure.adventure.text.Component;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
+import com.github.sirblobman.api.nms.MultiVersionHandler;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
@@ -18,6 +19,16 @@ public final class DiscoArmorMenu extends AbstractMenu {
     public DiscoArmorMenu(DiscoArmorPlugin plugin, Player player) {
         super(plugin, player);
         this.plugin = plugin;
+    }
+
+    @Override
+    public LanguageManager getLanguageManager() {
+        return this.plugin.getLanguageManager();
+    }
+
+    @Override
+    public MultiVersionHandler getMultiVersionHandler() {
+        return this.plugin.getMultiVersionHandler();
     }
 
     @Override
