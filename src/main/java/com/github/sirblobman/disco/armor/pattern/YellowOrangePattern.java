@@ -41,7 +41,7 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
         int blue = currentColor.getBlue();
 
         green += 5;
-        if(green > 255) {
+        if (green > 255) {
             green = 128;
         }
 
@@ -56,7 +56,7 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
         Color nextColor = getNextColor(player);
 
         ArmorType[] armorTypeArray = ArmorType.values();
-        for(ArmorType armorType : armorTypeArray) {
+        for (ArmorType armorType : armorTypeArray) {
             ItemStack armor = createArmor(player, armorType, nextColor);
             armorMap.put(armorType, armor);
         }
@@ -68,7 +68,7 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
     protected ItemStack getMenuItem() {
         ItemStack item = new ItemStack(Material.YELLOW_BANNER);
         BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-        if(bannerMeta == null) {
+        if (bannerMeta == null) {
             throw new IllegalStateException("null banner meta!");
         }
 

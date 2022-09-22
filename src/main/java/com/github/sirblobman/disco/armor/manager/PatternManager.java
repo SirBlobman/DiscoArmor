@@ -36,13 +36,13 @@ public final class PatternManager {
             DiscoArmorPattern pattern = constructor.newInstance(plugin);
 
             String patternId = pattern.getId();
-            if(this.patternMap.containsKey(patternId)) {
+            if (this.patternMap.containsKey(patternId)) {
                 String message = ("An armor pattern with id '" + patternId + "' is already registered.");
                 throw new IllegalArgumentException(message);
             }
 
             this.patternMap.put(patternId, pattern);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             Logger logger = this.plugin.getLogger();
             logger.log(Level.WARNING, "An error occurred while registering an armor pattern:", ex);
         }

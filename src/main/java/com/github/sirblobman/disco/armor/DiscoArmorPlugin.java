@@ -48,7 +48,7 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
     @Override
     public void onEnable() {
         int minorVersion = VersionUtility.getMinorVersion();
-        if(minorVersion < 13) {
+        if (minorVersion < 13) {
             Logger logger = getLogger();
             logger.warning("This plugin was made for 1.13+");
             logger.warning("You should not be using it on " + VersionUtility.getMinecraftVersion());
@@ -68,11 +68,11 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
     @Override
     public void onDisable() {
         DiscoArmorTask discoArmorTask = getDiscoArmorTask();
-        if(discoArmorTask != null) {
+        if (discoArmorTask != null) {
             try {
                 discoArmorTask.cancel();
                 discoArmorTask.disableAll();
-            } catch(IllegalStateException ignored) {
+            } catch (IllegalStateException ignored) {
                 // Do Nothing
             }
         }
@@ -120,10 +120,10 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
 
     private void registerTasks() {
         DiscoArmorTask discoArmorTask = getDiscoArmorTask();
-        if(discoArmorTask != null) {
+        if (discoArmorTask != null) {
             try {
                 discoArmorTask.cancel();
-            } catch(IllegalStateException ignored) {
+            } catch (IllegalStateException ignored) {
                 // Do Nothing
             }
 

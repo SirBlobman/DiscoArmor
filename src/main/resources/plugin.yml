@@ -23,7 +23,7 @@ commands:
       - "rainbow"
       - "rainbow-armor"
       - "rainbowarmor"
-  
+
 permissions:
   disco-armor.command.disco-armor:
     description: "Allows access to the '/disco-armor' command."

@@ -37,34 +37,34 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         discoArmorTask.disable(player);
     }
 
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent e) {
         Entity entity = e.getEntity();
-        if(!(entity instanceof Player player)) {
+        if (!(entity instanceof Player player)) {
             return;
         }
 
         DiscoArmorPlugin plugin = getPlugin();
         ConfigurationManager configurationManager = plugin.getConfigurationManager();
         YamlConfiguration configuration = configurationManager.get("config.yml");
-        if(!configuration.getBoolean("disable-on-damage")) {
+        if (!configuration.getBoolean("disable-on-damage")) {
             return;
         }
 
         DiscoArmorTask discoArmorTask = plugin.getDiscoArmorTask();
-        if(discoArmorTask.isEnabled(player)) {
+        if (discoArmorTask.isEnabled(player)) {
             discoArmorTask.disable(player);
 
-            if(configuration.getBoolean("prevent-first-hit", false)) {
+            if (configuration.getBoolean("prevent-first-hit", false)) {
                 e.setCancelled(true);
             }
         }
     }
 
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onClick(InventoryClickEvent e) {
         ItemStack item = e.getCurrentItem();
-        if(isNotDiscoArmor(item)) {
+        if (isNotDiscoArmor(item)) {
             return;
         }
 
@@ -75,11 +75,11 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         languageManager.sendMessage(human, "error.prevent-removal", null);
     }
 
-    @EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
         Item entity = e.getItemDrop();
         ItemStack item = entity.getItemStack();
-        if(isNotDiscoArmor(item)) {
+        if (isNotDiscoArmor(item)) {
             return;
         }
 
@@ -91,12 +91,12 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
     }
 
     private boolean isNotDiscoArmor(ItemStack item) {
-        if(ItemUtility.isAir(item)) {
+        if (ItemUtility.isAir(item)) {
             return true;
         }
 
         ItemMeta itemMeta = item.getItemMeta();
-        if(itemMeta == null) {
+        if (itemMeta == null) {
             return true;
         }
 

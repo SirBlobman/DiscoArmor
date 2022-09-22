@@ -39,7 +39,7 @@ public final class OneColorPattern extends DiscoArmorPattern {
         Color nextColor = getNextColor(player);
 
         ArmorType[] armorTypeArray = ArmorType.values();
-        for(ArmorType armorType : armorTypeArray) {
+        for (ArmorType armorType : armorTypeArray) {
             ItemStack armor = createArmor(player, armorType, nextColor);
             armorMap.put(armorType, armor);
         }

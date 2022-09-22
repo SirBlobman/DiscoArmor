@@ -75,14 +75,14 @@ public final class DiscoArmorTask extends BukkitRunnable {
         PlayerDataManager playerDataManager = getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         String patternName = configuration.getString("pattern");
-        if(patternName == null) {
+        if (patternName == null) {
             loadOldArmor(player);
             return;
         }
 
         PatternManager patternManager = getPatternManager();
         DiscoArmorPattern pattern = patternManager.getPattern(patternName);
-        if(pattern == null) {
+        if (pattern == null) {
             loadOldArmor(player);
             return;
         }
@@ -94,7 +94,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
 
     private void saveOldArmor(Player player) {
         UUID playerId = player.getUniqueId();
-        if(this.oldArmorMap.containsKey(playerId)) {
+        if (this.oldArmorMap.containsKey(playerId)) {
             return;
         }
 
@@ -105,7 +105,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
     private void loadOldArmor(Player player) {
         UUID playerId = player.getUniqueId();
         ItemStack[] oldArmor = this.oldArmorMap.remove(playerId);
-        if(oldArmor == null) {
+        if (oldArmor == null) {
             return;
         }
 
@@ -119,9 +119,9 @@ public final class DiscoArmorTask extends BukkitRunnable {
         ItemStack[] armorContents = playerInventory.getArmorContents();
         int armorContentsLength = armorContents.length;
 
-        for(int slot = 0; slot < armorContentsLength; slot++) {
+        for (int slot = 0; slot < armorContentsLength; slot++) {
             ItemStack item = armorContents[slot];
-            if(isDiscoArmor(item)) {
+            if (isDiscoArmor(item)) {
                 armorContents[slot] = new ItemStack(Material.AIR);
             }
         }
@@ -130,12 +130,12 @@ public final class DiscoArmorTask extends BukkitRunnable {
     }
 
     private boolean isDiscoArmor(ItemStack item) {
-        if(ItemUtility.isAir(item)) {
+        if (ItemUtility.isAir(item)) {
             return false;
         }
 
         ItemMeta itemMeta = item.getItemMeta();
-        if(itemMeta == null) {
+        if (itemMeta == null) {
             return false;
         }
 
@@ -160,7 +160,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
         PlayerDataManager playerDataManager = getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         String patternName = configuration.getString("pattern");
-        if(patternName == null) {
+        if (patternName == null) {
             return false;
         }
 

@@ -36,7 +36,7 @@ public final class OldGloryPattern extends DiscoArmorPattern {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int choice = rng.nextInt(3);
 
-        return switch(choice) {
+        return switch (choice) {
             case 0 -> this.oldGloryRed;
             case 1 -> this.oldGloryWhite;
             default -> this.oldGloryBlue;
@@ -49,7 +49,7 @@ public final class OldGloryPattern extends DiscoArmorPattern {
         Color nextColor = getNextColor(player);
 
         ArmorType[] armorTypeArray = ArmorType.values();
-        for(ArmorType armorType : armorTypeArray) {
+        for (ArmorType armorType : armorTypeArray) {
             ItemStack armor = createArmor(player, armorType, nextColor);
             armorMap.put(armorType, armor);
         }
@@ -61,7 +61,7 @@ public final class OldGloryPattern extends DiscoArmorPattern {
     protected ItemStack getMenuItem() {
         ItemStack item = new ItemStack(Material.RED_BANNER);
         BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-        if(bannerMeta == null) {
+        if (bannerMeta == null) {
             throw new IllegalStateException("null banner meta!");
         }
 

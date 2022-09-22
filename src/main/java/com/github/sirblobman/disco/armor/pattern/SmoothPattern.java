@@ -34,7 +34,8 @@ public final class SmoothPattern extends DiscoArmorPattern {
     }
 
     @Override
-    protected Color getNextColor(Player player) {UUID uuid = player.getUniqueId();
+    protected Color getNextColor(Player player) {
+        UUID uuid = player.getUniqueId();
         Color currentColor = this.colorMap.getOrDefault(uuid, this.defaultColor);
         int red = currentColor.getRed();
         int green = currentColor.getGreen();
@@ -43,15 +44,15 @@ public final class SmoothPattern extends DiscoArmorPattern {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int choice = rng.nextInt(3);
 
-        if(choice == 0) {
+        if (choice == 0) {
             red += 16;
-            if(red > 255) red -= 255;
-        } else if(choice == 1) {
+            if (red > 255) red -= 255;
+        } else if (choice == 1) {
             green += 16;
-            if(green > 255) green -= 255;
+            if (green > 255) green -= 255;
         } else {
             blue += 16;
-            if(blue > 255) blue -= 255;
+            if (blue > 255) blue -= 255;
         }
 
         Color newColor = Color.fromRGB(red, green, blue);
@@ -65,7 +66,7 @@ public final class SmoothPattern extends DiscoArmorPattern {
         Color nextColor = getNextColor(player);
 
         ArmorType[] armorTypeArray = ArmorType.values();
-        for(ArmorType armorType : armorTypeArray) {
+        for (ArmorType armorType : armorTypeArray) {
             ItemStack armor = createArmor(player, armorType, nextColor);
             armorMap.put(armorType, armor);
         }
@@ -77,7 +78,7 @@ public final class SmoothPattern extends DiscoArmorPattern {
     protected ItemStack getMenuItem() {
         ItemStack item = new ItemStack(Material.RED_BANNER);
         BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-        if(bannerMeta == null) {
+        if (bannerMeta == null) {
             throw new IllegalStateException("null banner meta!");
         }
 

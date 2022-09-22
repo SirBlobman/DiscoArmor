@@ -26,7 +26,7 @@ final class SubCommandSelect extends PlayerCommand {
 
     @Override
     protected List<String> onTabComplete(Player player, String[] args) {
-        if(args.length == 1) {
+        if (args.length == 1) {
             PatternManager patternManager = this.plugin.getPatternManager();
             List<String> valueList = patternManager.getPatternIds();
             return getMatching(args[0], valueList);
@@ -37,21 +37,21 @@ final class SubCommandSelect extends PlayerCommand {
 
     @Override
     protected boolean execute(Player player, String[] args) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             return false;
         }
 
         String patternId = args[0].toLowerCase();
         PatternManager patternManager = this.plugin.getPatternManager();
         DiscoArmorPattern pattern = patternManager.getPattern(patternId);
-        if(pattern == null) {
+        if (pattern == null) {
             Replacer replacer = new SimpleReplacer("{pattern}", patternId);
             sendMessage(player, "error.invalid-pattern", replacer);
             return true;
         }
 
         String permissionName = ("disco-armor.pattern." + patternId);
-        if(!player.hasPermission(permissionName)) {
+        if (!player.hasPermission(permissionName)) {
             Replacer replacer = new SimpleReplacer("{pattern}", patternId);
             sendMessage(player, "error.no-pattern-permission", replacer);
             return true;

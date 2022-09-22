@@ -39,7 +39,7 @@ public final class RandomPattern extends DiscoArmorPattern {
     public Map<ArmorType, ItemStack> getNextArmor(Player player) {
         Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
         ArmorType[] armorTypeArray = ArmorType.values();
-        for(ArmorType armorType : armorTypeArray) {
+        for (ArmorType armorType : armorTypeArray) {
             Color nextColor = getNextColor(player);
             ItemStack armor = createArmor(player, armorType, nextColor);
             armorMap.put(armorType, armor);

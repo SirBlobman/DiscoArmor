@@ -29,12 +29,12 @@ final class SubCommandAdminOn extends Command {
 
     @Override
     protected List<String> onTabComplete(CommandSender sender, String[] args) {
-        if(args.length == 1) {
+        if (args.length == 1) {
             Set<String> valueSet = getOnlinePlayerNames();
             return getMatching(args[0], valueSet);
         }
 
-        if(args.length == 2) {
+        if (args.length == 2) {
             PatternManager patternManager = this.plugin.getPatternManager();
             List<String> valueList = patternManager.getPatternIds();
             return getMatching(args[1], valueList);
@@ -45,20 +45,20 @@ final class SubCommandAdminOn extends Command {
 
     @Override
     protected boolean execute(CommandSender sender, String[] args) {
-        if(args.length < 2) {
+        if (args.length < 2) {
             return false;
         }
 
         String targetName = args[0];
         Player target = findTarget(sender, targetName);
-        if(target == null) {
+        if (target == null) {
             return true;
         }
 
         String patternId = args[1].toLowerCase();
         PatternManager patternManager = this.plugin.getPatternManager();
         DiscoArmorPattern pattern = patternManager.getPattern(patternId);
-        if(pattern == null) {
+        if (pattern == null) {
             Replacer replacer = new SimpleReplacer("{pattern}", patternId);
             sendMessage(sender, "error.invalid-pattern", replacer);
             return true;

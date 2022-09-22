@@ -106,12 +106,12 @@ public abstract class DiscoArmorPattern {
 
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         YamlConfiguration playerData = playerDataManager.get(player);
-        if(playerData.getBoolean("glowing", defaultGlowing)) {
+        if (playerData.getBoolean("glowing", defaultGlowing)) {
             builder.withGlowing();
         }
 
         ItemMeta itemMeta = builder.getItemMeta();
-        if(itemMeta != null) {
+        if (itemMeta != null) {
             NamespacedKey discoArmorKey = new NamespacedKey(plugin, "disco");
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             persistentDataContainer.set(discoArmorKey, PersistentDataType.BYTE, (byte) 1);

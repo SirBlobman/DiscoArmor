@@ -37,7 +37,7 @@ public final class PatternButton extends QuickButton {
         String patternId = pattern.getId();
 
         String permissionName = ("disco-armor.pattern." + patternId);
-        if(!player.hasPermission(permissionName)) {
+        if (!player.hasPermission(permissionName)) {
             Replacer replacer = new SimpleReplacer("{pattern}", patternId);
             languageManager.sendMessage(player, "error.no-pattern-permission", replacer);
             return;

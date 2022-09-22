@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.sirblobman.api.adventure.adventure.text.Component;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
@@ -27,18 +28,17 @@ public final class DiscoArmorMenu extends AbstractMenu {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public String getTitle() {
+    public Component getTitle() {
         Player player = getPlayer();
         DiscoArmorPlugin plugin = getDiscoArmorPlugin();
         LanguageManager languageManager = plugin.getLanguageManager();
-        return languageManager.getMessageLegacy(player, "menu-title", null);
+        return languageManager.getMessage(player, "menu-title", null);
     }
 
     @Override
     public ItemStack getItem(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
-        if(pattern == null) {
+        if (pattern == null) {
             return null;
         }
 
@@ -48,7 +48,7 @@ public final class DiscoArmorMenu extends AbstractMenu {
     @Override
     public PatternButton getButton(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
-        if(pattern == null) {
+        if (pattern == null) {
             return null;
         }
 
@@ -71,7 +71,7 @@ public final class DiscoArmorMenu extends AbstractMenu {
         List<DiscoArmorPattern> patternList = patternManager.getPatterns();
         int patternListSize = patternList.size();
 
-        if(slot < 0 || slot >= patternListSize) {
+        if (slot < 0 || slot >= patternListSize) {
             return null;
         }
 
@@ -79,23 +79,23 @@ public final class DiscoArmorMenu extends AbstractMenu {
     }
 
     private int getSize(int number) {
-        if(number <= 9) {
+        if (number <= 9) {
             return 9;
         }
 
-        if(number <= 18) {
+        if (number <= 18) {
             return 18;
         }
 
-        if(number <= 27) {
+        if (number <= 27) {
             return 27;
         }
 
-        if(number <= 36) {
+        if (number <= 36) {
             return 36;
         }
 
-        if(number <= 45) {
+        if (number <= 45) {
             return 45;
         }
 
