@@ -5,6 +5,10 @@ pipeline {
         githubProjectProperty(projectUrlStr: "https://github.com/SirBlobman/DiscoArmor")
     }
 
+    environment {
+        DISCORD_URL = credentials('PUBLIC_DISCORD_WEBHOOK')
+    }
+
     triggers {
         githubPush()
     }
