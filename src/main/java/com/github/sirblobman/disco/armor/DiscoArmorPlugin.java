@@ -15,6 +15,7 @@ import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.api.update.UpdateManager;
 import com.github.sirblobman.api.utility.VersionUtility;
 import com.github.sirblobman.disco.armor.command.CommandDiscoArmor;
+import com.github.sirblobman.disco.armor.configuration.MainConfiguration;
 import com.github.sirblobman.disco.armor.listener.ListenerDiscoArmor;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.GrayscalePattern;
@@ -28,10 +29,14 @@ import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
 
 public final class DiscoArmorPlugin extends ConfigurablePlugin {
     private final PatternManager patternManager;
+    private final MainConfiguration configuration;
+
     private DiscoArmorTask discoArmorTask;
 
     public DiscoArmorPlugin() {
         this.patternManager = new PatternManager(this);
+        this.configuration = new MainConfiguration();
+
         this.discoArmorTask = new DiscoArmorTask(this);
     }
 
@@ -48,13 +53,17 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
     @Override
     public void onEnable() {
         int minorVersion = VersionUtility.getMinorVersion();
-        if (minorVersion < 13) {
+        if (minorVersion < 18) {
             Logger logger = getLogger();
-            logger.warning("This plugin was made for 1.13+");
+            logger.warning("This plugin was made for 1.18+");
             logger.warning("You should not be using it on " + VersionUtility.getMinecraftVersion());
         }
 
         reloadConfiguration();
+
+        LanguageManager languageManager = getLanguageManager();
+        languageManager.onPluginEnable();
+
         registerPatterns();
 
         registerCommands();
@@ -62,7 +71,7 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
         registerUpdateChecker();
 
         broadcastEnabledMessage();
-        registerbStats();
+        register_bStats();
     }
 
     @Override
@@ -85,14 +94,22 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
         ConfigurationManager configurationManager = getConfigurationManager();
         configurationManager.reload("config.yml");
 
+        YamlConfiguration configurationFile = configurationManager.get("config.yml");
+        MainConfiguration configuration = getConfiguration();
+        configuration.load(configurationFile);
+
         LanguageManager languageManager = getLanguageManager();
-        languageManager.reloadLanguageFiles();
+        languageManager.reloadLanguages();
 
         registerTasks();
     }
 
     public PatternManager getPatternManager() {
         return this.patternManager;
+    }
+
+    public MainConfiguration getConfiguration() {
+        return this.configuration;
     }
 
     public DiscoArmorTask getDiscoArmorTask() {
@@ -130,12 +147,11 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
             discoArmorTask.disableAll();
         }
 
-        ConfigurationManager configurationManager = getConfigurationManager();
-        YamlConfiguration configuration = configurationManager.get("config.yml");
-        long taskPeriod = configuration.getLong("armor-speed");
+        MainConfiguration configuration = getConfiguration();
+        long armorSpeed = configuration.getArmorSpeed();
 
         this.discoArmorTask = new DiscoArmorTask(this);
-        this.discoArmorTask.runTaskTimer(this, 5L, taskPeriod);
+        this.discoArmorTask.runTaskTimer(this, 5L, armorSpeed);
     }
 
     private void registerUpdateChecker() {
@@ -144,7 +160,7 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
         updateManager.addResource(this, 60700L);
     }
 
-    private void registerbStats() {
+    private void register_bStats() {
         Metrics metrics = new Metrics(this, 16221);
         metrics.addCustomChart(new SimplePie("selected_language", this::getDefaultLanguageCode));
     }
@@ -152,16 +168,16 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
     private String getDefaultLanguageCode() {
         LanguageManager languageManager = getLanguageManager();
         Language defaultLanguage = languageManager.getDefaultLanguage();
-        return (defaultLanguage == null ? "none" : defaultLanguage.getLanguageCode());
+        return (defaultLanguage == null ? "none" : defaultLanguage.getLanguageName());
     }
 
     private void broadcastEnabledMessage() {
         LanguageManager languageManager = getLanguageManager();
-        languageManager.broadcastMessage("broadcast.enabled", null, null);
+        languageManager.broadcastMessage("broadcast.enabled", null);
     }
 
     private void broadcastDisabledMessage() {
         LanguageManager languageManager = getLanguageManager();
-        languageManager.broadcastMessage("broadcast.disabled", null, null);
+        languageManager.broadcastMessage("broadcast.disabled", null);
     }
 }

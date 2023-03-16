@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 
 import com.github.sirblobman.api.command.Command;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
-import com.github.sirblobman.api.language.Replacer;
-import com.github.sirblobman.api.language.SimpleReplacer;
+import com.github.sirblobman.api.language.replacer.Replacer;
+import com.github.sirblobman.api.language.replacer.StringReplacer;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
 final class SubCommandAdminOff extends Command {
@@ -50,7 +50,7 @@ final class SubCommandAdminOff extends Command {
         configuration.set("pattern", null);
         playerDataManager.save(target);
 
-        Replacer replacer = new SimpleReplacer("{target}", targetName);
+        Replacer replacer = new StringReplacer("{target}", targetName);
         sendMessage(sender, "command.admin.disabled", replacer);
         return true;
     }

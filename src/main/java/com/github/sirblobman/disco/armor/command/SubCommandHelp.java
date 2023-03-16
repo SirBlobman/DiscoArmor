@@ -31,7 +31,7 @@ final class SubCommandHelp extends Command {
             }
 
             String messagePath = ("help-player." + playerCommandName);
-            sendMessage(sender, messagePath, null);
+            sendMessage(sender, messagePath);
         }
 
         List<String> adminCommandList = List.of("off", "on", "reload");
@@ -42,7 +42,7 @@ final class SubCommandHelp extends Command {
             }
 
             String messagePath = ("help-admin." + adminCommandName);
-            sendMessage(sender, messagePath, null);
+            sendMessage(sender, messagePath);
         }
 
         return true;

@@ -13,7 +13,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
+import com.github.sirblobman.api.adventure.adventure.text.Component;
+import com.github.sirblobman.api.adventure.adventure.text.minimessage.MiniMessage;
 import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
 public final class OldGloryPattern extends DiscoArmorPattern {
@@ -27,8 +30,10 @@ public final class OldGloryPattern extends DiscoArmorPattern {
     }
 
     @Override
-    public String getDisplayName() {
-        return "<gradient:#B31942:#FFFFFF:#0A3161>Old Glory</gradient>";
+    public Component getDisplayName() {
+        LanguageManager languageManager = getLanguageManager();
+        MiniMessage miniMessage = languageManager.getMiniMessage();
+        return miniMessage.deserialize("<gradient:#B31942:#FFFFFF:#0A3161>Old Glory</gradient>");
     }
 
     @Override

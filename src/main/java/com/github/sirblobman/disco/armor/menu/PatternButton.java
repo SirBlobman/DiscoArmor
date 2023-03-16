@@ -3,10 +3,12 @@ package com.github.sirblobman.disco.armor.menu;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.github.sirblobman.api.adventure.adventure.text.Component;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.language.LanguageManager;
-import com.github.sirblobman.api.language.Replacer;
-import com.github.sirblobman.api.language.SimpleReplacer;
+import com.github.sirblobman.api.language.replacer.ComponentReplacer;
+import com.github.sirblobman.api.language.replacer.Replacer;
+import com.github.sirblobman.api.language.replacer.StringReplacer;
 import com.github.sirblobman.api.menu.button.QuickButton;
 import com.github.sirblobman.api.utility.Validate;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
@@ -38,7 +40,7 @@ public final class PatternButton extends QuickButton {
 
         String permissionName = ("disco-armor.pattern." + patternId);
         if (!player.hasPermission(permissionName)) {
-            Replacer replacer = new SimpleReplacer("{pattern}", patternId);
+            Replacer replacer = new StringReplacer("{pattern}", patternId);
             languageManager.sendMessage(player, "error.no-pattern-permission", replacer);
             return;
         }
@@ -49,8 +51,8 @@ public final class PatternButton extends QuickButton {
         configuration.set("pattern", patternId);
         playerDataManager.save(player);
 
-        String patternDisplayName = pattern.getDisplayName();
-        Replacer replacer = new SimpleReplacer("{pattern}", patternDisplayName);
+        Component displayName = pattern.getDisplayName();
+        Replacer replacer = new ComponentReplacer("{pattern}", displayName);
         languageManager.sendMessage(player, "command.change-type", replacer);
     }
 }

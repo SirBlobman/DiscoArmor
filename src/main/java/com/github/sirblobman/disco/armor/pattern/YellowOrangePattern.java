@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
+import com.github.sirblobman.api.adventure.adventure.text.Component;
+import com.github.sirblobman.api.adventure.adventure.text.TextComponent.Builder;
+import com.github.sirblobman.api.adventure.adventure.text.format.TextColor;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
@@ -28,8 +31,15 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
     }
 
     @Override
-    public String getDisplayName() {
-        return "<#FFFF00>Yellow</#FFFF00> <#FFA500>Orange</#FFA500>";
+    public Component getDisplayName() {
+        TextColor yellow = TextColor.color(0xFFFF00);
+        TextColor orange = TextColor.color(0xFFA500);
+
+        Builder builder = Component.text();
+        builder.append(Component.text("Yellow", yellow));
+        builder.append(Component.space());
+        builder.append(Component.text("Orange", orange));
+        return builder.build();
     }
 
     @Override

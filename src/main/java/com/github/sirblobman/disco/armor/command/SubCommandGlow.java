@@ -34,7 +34,7 @@ final class SubCommandGlow extends PlayerCommand {
         playerDataManager.save(player);
 
         String messagePath = (glowing ? "glow.enabled" : "glow.disabled");
-        sendMessage(player, messagePath, null);
+        sendMessage(player, messagePath);
         return true;
     }
 }

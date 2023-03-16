@@ -1,7 +1,6 @@
 package com.github.sirblobman.disco.armor.listener;
 
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
@@ -17,11 +16,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import com.github.sirblobman.api.configuration.ConfigurationManager;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.plugin.listener.PluginListener;
 import com.github.sirblobman.api.utility.ItemUtility;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.configuration.MainConfiguration;
 import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
 
 public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
@@ -45,9 +44,8 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         }
 
         DiscoArmorPlugin plugin = getPlugin();
-        ConfigurationManager configurationManager = plugin.getConfigurationManager();
-        YamlConfiguration configuration = configurationManager.get("config.yml");
-        if (!configuration.getBoolean("disable-on-damage")) {
+        MainConfiguration configuration = plugin.getConfiguration();
+        if (!configuration.isDisableOnDamage()) {
             return;
         }
 
@@ -55,7 +53,7 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         if (discoArmorTask.isEnabled(player)) {
             discoArmorTask.disable(player);
 
-            if (configuration.getBoolean("prevent-first-hit", false)) {
+            if (configuration.isPreventFirstHit()) {
                 e.setCancelled(true);
             }
         }
@@ -72,7 +70,7 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         HumanEntity human = e.getWhoClicked();
         DiscoArmorPlugin plugin = getPlugin();
         LanguageManager languageManager = plugin.getLanguageManager();
-        languageManager.sendMessage(human, "error.prevent-removal", null);
+        languageManager.sendMessage(human, "error.prevent-removal");
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -87,7 +85,7 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         Player player = e.getPlayer();
         DiscoArmorPlugin plugin = getPlugin();
         LanguageManager languageManager = plugin.getLanguageManager();
-        languageManager.sendMessage(player, "error.prevent-removal", null);
+        languageManager.sendMessage(player, "error.prevent-removal");
     }
 
     private boolean isNotDiscoArmor(ItemStack item) {

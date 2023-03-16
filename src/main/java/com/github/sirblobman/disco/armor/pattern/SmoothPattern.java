@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
+import com.github.sirblobman.api.adventure.adventure.text.Component;
+import com.github.sirblobman.api.adventure.adventure.text.format.NamedTextColor;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
@@ -29,8 +31,8 @@ public final class SmoothPattern extends DiscoArmorPattern {
     }
 
     @Override
-    public String getDisplayName() {
-        return "<light_purple>Smooth</light_purple>";
+    public Component getDisplayName() {
+        return Component.text("Smooth", NamedTextColor.LIGHT_PURPLE);
     }
 
     @Override

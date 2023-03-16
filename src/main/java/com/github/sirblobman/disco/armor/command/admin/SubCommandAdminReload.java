@@ -25,7 +25,7 @@ final class SubCommandAdminReload extends Command {
         JavaPlugin plugin = getPlugin();
         plugin.reloadConfig();
 
-        sendMessage(sender, "command.admin.reload-success", null);
+        sendMessage(sender, "command.admin.reload-success");
         return true;
     }
 }

@@ -8,12 +8,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.github.sirblobman.api.adventure.adventure.text.Component;
 import com.github.sirblobman.api.command.Command;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
-import com.github.sirblobman.api.language.MultiReplacer;
-import com.github.sirblobman.api.language.Replacer;
-import com.github.sirblobman.api.language.SimpleReplacer;
-import com.github.sirblobman.api.utility.MessageUtility;
+import com.github.sirblobman.api.language.replacer.ComponentReplacer;
+import com.github.sirblobman.api.language.replacer.Replacer;
+import com.github.sirblobman.api.language.replacer.StringReplacer;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
@@ -59,7 +59,7 @@ final class SubCommandAdminOn extends Command {
         PatternManager patternManager = this.plugin.getPatternManager();
         DiscoArmorPattern pattern = patternManager.getPattern(patternId);
         if (pattern == null) {
-            Replacer replacer = new SimpleReplacer("{pattern}", patternId);
+            Replacer replacer = new StringReplacer("{pattern}", patternId);
             sendMessage(sender, "error.invalid-pattern", replacer);
             return true;
         }
@@ -69,12 +69,10 @@ final class SubCommandAdminOn extends Command {
         configuration.set("pattern", patternId);
         playerDataManager.save(target);
 
-        String displayName = pattern.getDisplayName();
-        String displayNameColored = MessageUtility.color(displayName);
-
-        Replacer replacer = new MultiReplacer("{pattern}", displayNameColored)
-                .addReplacement("{target}", targetName);
-        sendMessage(sender, "command.admin.change-type", replacer);
+        Component displayName = pattern.getDisplayName();
+        Replacer patternReplacer = new ComponentReplacer("{pattern}", displayName);
+        Replacer targetReplacer = new StringReplacer("{target}", targetName);
+        sendMessage(sender, "command.admin.change-type", patternReplacer, targetReplacer);
         return true;
     }
 }
