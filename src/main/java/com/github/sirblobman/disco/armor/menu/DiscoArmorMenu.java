@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.sirblobman.api.adventure.adventure.text.Component;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
 import com.github.sirblobman.api.nms.MultiVersionHandler;

@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
-import com.github.sirblobman.api.adventure.adventure.text.Component;
-import com.github.sirblobman.api.adventure.adventure.text.TextComponent.Builder;
-import com.github.sirblobman.api.adventure.adventure.text.format.TextColor;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
+import com.github.sirblobman.api.shaded.adventure.text.TextComponent.Builder;
+import com.github.sirblobman.api.shaded.adventure.text.format.TextColor;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 

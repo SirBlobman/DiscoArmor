@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import com.github.sirblobman.api.adventure.adventure.text.Component;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.api.item.ItemBuilder;
@@ -23,7 +23,7 @@ import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.nms.ItemHandler;
 import com.github.sirblobman.api.nms.MultiVersionHandler;
 import com.github.sirblobman.api.utility.Validate;
-import com.github.sirblobman.api.xseries.XMaterial;
+import com.github.sirblobman.api.shaded.xseries.XMaterial;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.configuration.MainConfiguration;
 
