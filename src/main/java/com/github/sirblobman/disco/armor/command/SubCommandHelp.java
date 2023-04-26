@@ -3,24 +3,26 @@ package com.github.sirblobman.disco.armor.command;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.command.CommandSender;
 
 import com.github.sirblobman.api.command.Command;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
-final class SubCommandHelp extends Command {
+public final class SubCommandHelp extends Command {
     public SubCommandHelp(DiscoArmorPlugin plugin) {
         super(plugin, "help");
         setPermissionName("disco-armor.command.disco-armor.help");
     }
 
     @Override
-    protected List<String> onTabComplete(CommandSender sender, String[] args) {
+    protected @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String @NotNull [] args) {
         return Collections.emptyList();
     }
 
     @Override
-    protected boolean execute(CommandSender sender, String[] args) {
+    protected boolean execute(@NotNull CommandSender sender, String @NotNull [] args) {
         sender.sendMessage("");
 
         List<String> playerCommandList = List.of("glow", "help", "off", "on", "select");

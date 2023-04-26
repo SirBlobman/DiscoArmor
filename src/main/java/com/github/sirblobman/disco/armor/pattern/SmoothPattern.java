@@ -1,10 +1,13 @@
 package com.github.sirblobman.disco.armor.pattern;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.jetbrains.annotations.NotNull;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -14,11 +17,13 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
+import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
+import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public final class SmoothPattern extends DiscoArmorPattern {
     private final Color defaultColor;
@@ -31,14 +36,29 @@ public final class SmoothPattern extends DiscoArmorPattern {
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Map<ArmorType, ItemStack> getNextArmor(@NotNull Player player) {
+        Color nextColor = getNextColor(player);
+        Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
+        ArmorType[] armorTypeArray = ArmorType.values();
+
+        for (ArmorType armorType : armorTypeArray) {
+            ItemStack armor = createArmor(player, armorType, nextColor);
+            armorMap.put(armorType, armor);
+        }
+
+        return Collections.unmodifiableMap(armorMap);
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
         return Component.text("Smooth", NamedTextColor.LIGHT_PURPLE);
     }
 
     @Override
-    protected Color getNextColor(Player player) {
-        UUID uuid = player.getUniqueId();
-        Color currentColor = this.colorMap.getOrDefault(uuid, this.defaultColor);
+    protected @NotNull Color getNextColor(Player player) {
+        UUID playerId = player.getUniqueId();
+        Color currentColor = this.colorMap.getOrDefault(playerId, this.defaultColor);
+
         int red = currentColor.getRed();
         int green = currentColor.getGreen();
         int blue = currentColor.getBlue();
@@ -58,30 +78,20 @@ public final class SmoothPattern extends DiscoArmorPattern {
         }
 
         Color newColor = Color.fromRGB(red, green, blue);
-        this.colorMap.put(uuid, newColor);
+        this.colorMap.put(playerId, newColor);
         return newColor;
     }
 
     @Override
-    public Map<ArmorType, ItemStack> getNextArmor(Player player) {
-        Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
-        Color nextColor = getNextColor(player);
-
-        ArmorType[] armorTypeArray = ArmorType.values();
-        for (ArmorType armorType : armorTypeArray) {
-            ItemStack armor = createArmor(player, armorType, nextColor);
-            armorMap.put(armorType, armor);
+    protected @NotNull ItemStack getMenuItem() {
+        ItemStack item = XMaterial.RED_BANNER.parseItem();
+        if (item == null) {
+            return new ItemStack(Material.BARRIER);
         }
 
-        return armorMap;
-    }
-
-    @Override
-    protected ItemStack getMenuItem() {
-        ItemStack item = new ItemStack(Material.RED_BANNER);
-        BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-        if (bannerMeta == null) {
-            throw new IllegalStateException("null banner meta!");
+        ItemMeta itemMeta = item.getItemMeta();
+        if (!(itemMeta instanceof BannerMeta bannerMeta)) {
+            return new ItemStack(Material.BARRIER);
         }
 
         Pattern blueGradient = new Pattern(DyeColor.BLUE, PatternType.GRADIENT);

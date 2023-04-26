@@ -7,11 +7,13 @@ main: "${pluginMainClass}"
 version: "${pluginVersion}"
 api-version: "1.18"
 
-depend:
-  - "BlueSlimeCore"
+folia-supported: true
 
 authors:
   - "SirBlobman"
+
+depend:
+  - "BlueSlimeCore"
 
 commands:
   disco-armor:

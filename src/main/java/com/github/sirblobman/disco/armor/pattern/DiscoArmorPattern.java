@@ -1,7 +1,11 @@
 package com.github.sirblobman.disco.armor.pattern;
 
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
 
 import org.bukkit.Color;
 import org.bukkit.NamespacedKey;
@@ -13,53 +17,76 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.api.item.ItemBuilder;
 import com.github.sirblobman.api.item.LeatherArmorBuilder;
-import com.github.sirblobman.api.language.ComponentHelper;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.nms.ItemHandler;
 import com.github.sirblobman.api.nms.MultiVersionHandler;
-import com.github.sirblobman.api.utility.Validate;
-import com.github.sirblobman.api.shaded.xseries.XMaterial;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.configuration.MainConfiguration;
+import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
+import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public abstract class DiscoArmorPattern {
     private final String id;
     private final DiscoArmorPlugin plugin;
 
-    public DiscoArmorPattern(DiscoArmorPlugin plugin, String id) {
-        this.plugin = Validate.notNull(plugin, "plugin must not be null!");
-        this.id = Validate.notEmpty(id, "id cannot be empty or null!");
+    private transient ItemBuilder itemBuilder;
+
+    public DiscoArmorPattern(@NotNull DiscoArmorPlugin plugin, @NotNull String id) {
+        this.plugin = plugin;
+        this.id = id;
+        this.itemBuilder = null;
     }
 
-    public final String getId() {
-        return this.id;
-    }
-
-    public final ItemStack getMenuIcon() {
-        ItemStack item = getMenuItem();
-        ItemBuilder builder = (item == null ? new ItemBuilder(XMaterial.BARRIER) : new ItemBuilder(item));
-
-        Component displayNameComponent = getDisplayName();
-        String displayName = ComponentHelper.toLegacy(displayNameComponent);
-        builder.withName(displayName);
-
-        ItemFlag[] itemFlagArray = ItemFlag.values();
-        builder.withFlags(itemFlagArray);
-        return builder.build();
-    }
-
-    protected final DiscoArmorPlugin getPlugin() {
+    protected final @NotNull DiscoArmorPlugin getPlugin() {
         return this.plugin;
     }
 
-    protected final LanguageManager getLanguageManager() {
+    protected final @NotNull LanguageManager getLanguageManager() {
         DiscoArmorPlugin plugin = getPlugin();
         return plugin.getLanguageManager();
+    }
+
+    protected final @NotNull MultiVersionHandler getMultiVersionHandler() {
+        DiscoArmorPlugin plugin = getPlugin();
+        return plugin.getMultiVersionHandler();
+    }
+
+    protected final @NotNull ItemHandler getItemHandler() {
+        MultiVersionHandler multiVersionHandler = getMultiVersionHandler();
+        return multiVersionHandler.getItemHandler();
+    }
+
+    public final @NotNull String getId() {
+        return this.id;
+    }
+
+    private @NotNull ItemBuilder getItemBuilder() {
+        if (this.itemBuilder != null) {
+            return this.itemBuilder;
+        }
+
+        ItemStack baseItem = getMenuItem();
+        ItemBuilder builder = (baseItem == null ? new ItemBuilder(XMaterial.BARRIER) : new ItemBuilder(baseItem));
+
+        DiscoArmorPlugin plugin = getPlugin();
+        MultiVersionHandler multiVersionHandler = plugin.getMultiVersionHandler();
+        ItemHandler itemHandler = multiVersionHandler.getItemHandler();
+
+        Component displayName = getDisplayName();
+        builder = builder.withName(itemHandler, displayName);
+
+        ItemFlag[] flags = ItemFlag.values();
+        this.itemBuilder = builder.withFlags(flags);
+        return this.itemBuilder;
+    }
+
+    public final @NotNull ItemStack getMenuIcon() {
+        ItemBuilder builder = getItemBuilder();
+        return builder.build();
     }
 
     protected final Component getArmorDisplayName(Player player) {
@@ -73,12 +100,9 @@ public abstract class DiscoArmorPattern {
     }
 
     protected final ItemStack createArmor(Player player, ArmorType armorType, Color color) {
+        ItemHandler itemHandler = getItemHandler();
         LeatherArmorBuilder builder = new LeatherArmorBuilder(armorType);
         builder.withColor(color);
-
-        DiscoArmorPlugin plugin = getPlugin();
-        MultiVersionHandler multiVersionHandler = plugin.getMultiVersionHandler();
-        ItemHandler itemHandler = multiVersionHandler.getItemHandler();
 
         Component displayName = getArmorDisplayName(player);
         builder.withName(itemHandler, displayName);
@@ -86,7 +110,8 @@ public abstract class DiscoArmorPattern {
         List<Component> lore = getArmorLore(player);
         builder.withLore(itemHandler, lore);
 
-        MainConfiguration configuration = plugin.getConfiguration();
+        DiscoArmorPlugin plugin = getPlugin();
+        DiscoArmorConfiguration configuration = plugin.getConfiguration();
         boolean defaultGlowing = configuration.isGlowing();
 
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
@@ -106,11 +131,22 @@ public abstract class DiscoArmorPattern {
         return builder.build();
     }
 
-    public abstract Component getDisplayName();
+    public @NotNull Map<ArmorType, ItemStack> getNextArmor(@NotNull Player player) {
+        Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
+        ArmorType[] armorTypeArray = ArmorType.values();
 
-    protected abstract Color getNextColor(Player player);
+        for (ArmorType armorType : armorTypeArray) {
+            Color nextColor = getNextColor(player);
+            ItemStack armor = createArmor(player, armorType, nextColor);
+            armorMap.put(armorType, armor);
+        }
 
-    protected abstract ItemStack getMenuItem();
+        return Collections.unmodifiableMap(armorMap);
+    }
 
-    public abstract Map<ArmorType, ItemStack> getNextArmor(Player player);
+    public abstract @NotNull Component getDisplayName();
+
+    protected abstract @NotNull Color getNextColor(@NotNull Player player);
+
+    protected abstract @NotNull ItemStack getMenuItem();
 }

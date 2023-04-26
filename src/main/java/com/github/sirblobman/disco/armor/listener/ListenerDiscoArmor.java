@@ -1,5 +1,8 @@
 package com.github.sirblobman.disco.armor.listener;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -10,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,20 +24,27 @@ import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.plugin.listener.PluginListener;
 import com.github.sirblobman.api.utility.ItemUtility;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.configuration.MainConfiguration;
+import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
 import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
+import com.github.sirblobman.disco.armor.task.DiscoArmorTaskManager;
 
-public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
-    public ListenerDiscoArmor(DiscoArmorPlugin plugin) {
+public final class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
+    public ListenerDiscoArmor(@NotNull DiscoArmorPlugin plugin) {
         super(plugin);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onJoin(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
+        DiscoArmorTaskManager taskManager = getTaskManager();
+        taskManager.createTask(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        DiscoArmorPlugin plugin = getPlugin();
-        DiscoArmorTask discoArmorTask = plugin.getDiscoArmorTask();
-        discoArmorTask.disable(player);
+        DiscoArmorTaskManager taskManager = getTaskManager();
+        taskManager.removeTask(player);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -44,15 +55,19 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         }
 
         DiscoArmorPlugin plugin = getPlugin();
-        MainConfiguration configuration = plugin.getConfiguration();
+        DiscoArmorConfiguration configuration = plugin.getConfiguration();
         if (!configuration.isDisableOnDamage()) {
             return;
         }
 
-        DiscoArmorTask discoArmorTask = plugin.getDiscoArmorTask();
-        if (discoArmorTask.isEnabled(player)) {
-            discoArmorTask.disable(player);
+        DiscoArmorTaskManager taskManager = getTaskManager();
+        DiscoArmorTask task = taskManager.getTask(player);
+        if (task == null) {
+            return;
+        }
 
+        if (task.isEnabled()) {
+            task.disable();
             if (configuration.isPreventFirstHit()) {
                 e.setCancelled(true);
             }
@@ -88,7 +103,12 @@ public class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
         languageManager.sendMessage(player, "error.prevent-removal");
     }
 
-    private boolean isNotDiscoArmor(ItemStack item) {
+    private @NotNull DiscoArmorTaskManager getTaskManager() {
+        DiscoArmorPlugin plugin = getPlugin();
+        return plugin.getTaskManager();
+    }
+
+    private boolean isNotDiscoArmor(@Nullable ItemStack item) {
         if (ItemUtility.isAir(item)) {
             return true;
         }

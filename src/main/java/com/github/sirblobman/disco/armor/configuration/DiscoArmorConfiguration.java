@@ -1,16 +1,18 @@
 package com.github.sirblobman.disco.armor.configuration;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.sirblobman.api.configuration.IConfigurable;
 
-public final class MainConfiguration implements IConfigurable {
+public final class DiscoArmorConfiguration implements IConfigurable {
     private long armorSpeed;
     private boolean disableOnDamage;
     private boolean preventFirstHit;
     private boolean glowing;
 
-    public MainConfiguration() {
+    public DiscoArmorConfiguration() {
         this.armorSpeed = 5;
         this.disableOnDamage = true;
         this.preventFirstHit = true;
@@ -18,7 +20,7 @@ public final class MainConfiguration implements IConfigurable {
     }
 
     @Override
-    public void load(ConfigurationSection config) {
+    public void load(@NotNull ConfigurationSection config) {
         setArmorSpeed(config.getLong("armor-speed", 5L));
         setDisableOnDamage(config.getBoolean("disable-on-damage", true));
         setPreventFirstHit(config.getBoolean("prevent-first-hit", true));

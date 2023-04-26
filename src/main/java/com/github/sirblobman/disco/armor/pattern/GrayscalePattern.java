@@ -1,31 +1,31 @@
 package com.github.sirblobman.disco.armor.pattern;
 
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
-import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
-import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 
 public final class GrayscalePattern extends DiscoArmorPattern {
-    public GrayscalePattern(DiscoArmorPlugin plugin) {
+    public GrayscalePattern(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "grayscale");
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Component.text("Grayscale", NamedTextColor.GRAY);
     }
 
     @Override
-    protected Color getNextColor(Player player) {
+    protected @NotNull Color getNextColor(@NotNull Player player) {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int red = rng.nextInt(256);
         int green = rng.nextInt(256);
@@ -37,21 +37,8 @@ public final class GrayscalePattern extends DiscoArmorPattern {
     }
 
     @Override
-    public Map<ArmorType, ItemStack> getNextArmor(Player player) {
-        Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
-        Color nextColor = getNextColor(player);
-
-        ArmorType[] armorTypeArray = ArmorType.values();
-        for (ArmorType armorType : armorTypeArray) {
-            ItemStack armor = createArmor(player, armorType, nextColor);
-            armorMap.put(armorType, armor);
-        }
-
-        return armorMap;
-    }
-
-    @Override
-    protected ItemStack getMenuItem() {
-        return XMaterial.GRAY_BANNER.parseItem();
+    protected @NotNull ItemStack getMenuItem() {
+        ItemStack item = XMaterial.GRAY_BANNER.parseItem();
+        return (item == null ? new ItemStack(Material.BARRIER) : item);
     }
 }

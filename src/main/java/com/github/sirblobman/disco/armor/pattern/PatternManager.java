@@ -1,4 +1,4 @@
-package com.github.sirblobman.disco.armor.manager;
+package com.github.sirblobman.disco.armor.pattern;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -9,30 +9,34 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.github.sirblobman.api.utility.Validate;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
 public final class PatternManager {
     private final DiscoArmorPlugin plugin;
     private final Map<String, DiscoArmorPattern> patternMap;
 
-    public PatternManager(DiscoArmorPlugin plugin) {
-        this.plugin = Validate.notNull(plugin, "plugin must not be null!");
+    public PatternManager(@NotNull DiscoArmorPlugin plugin) {
+        this.plugin = plugin;
         this.patternMap = new LinkedHashMap<>();
     }
 
-    private DiscoArmorPlugin getPlugin() {
+    private @NotNull DiscoArmorPlugin getPlugin() {
         return this.plugin;
     }
 
-    public void register(Class<? extends DiscoArmorPattern> patternClass) {
-        Validate.notNull(patternClass, "patternClass must not be null!");
+    private @NotNull Logger getLogger() {
+        DiscoArmorPlugin plugin = getPlugin();
+        return plugin.getLogger();
+    }
 
+    public void register(@NotNull Class<? extends DiscoArmorPattern> patternClass) {
         try {
-            Constructor<? extends DiscoArmorPattern> constructor = patternClass.getDeclaredConstructor(
-                    DiscoArmorPlugin.class);
             DiscoArmorPlugin plugin = getPlugin();
+            Class<? extends DiscoArmorPlugin> pluginClass = plugin.getClass();
+            Constructor<? extends DiscoArmorPattern> constructor = patternClass.getDeclaredConstructor(pluginClass);
             DiscoArmorPattern pattern = constructor.newInstance(plugin);
 
             String patternId = pattern.getId();
@@ -42,29 +46,28 @@ public final class PatternManager {
             }
 
             this.patternMap.put(patternId, pattern);
-        } catch (Exception ex) {
-            Logger logger = this.plugin.getLogger();
-            logger.log(Level.WARNING, "An error occurred while registering an armor pattern:", ex);
+        } catch (ReflectiveOperationException | IllegalArgumentException ex) {
+            Logger logger = getLogger();
+            logger.log(Level.WARNING, "Failed to register an armor pattern:", ex);
         }
     }
 
-    public void unregister(DiscoArmorPattern pattern) {
+    public void unregister(@NotNull DiscoArmorPattern pattern) {
         String patternId = pattern.getId();
         this.patternMap.remove(patternId);
     }
 
-    public List<String> getPatternIds() {
+    public @NotNull List<String> getPatternIds() {
         Set<String> keySet = this.patternMap.keySet();
         return List.copyOf(keySet);
     }
 
-    public List<DiscoArmorPattern> getPatterns() {
+    public @NotNull List<DiscoArmorPattern> getPatterns() {
         Collection<DiscoArmorPattern> patternCollection = this.patternMap.values();
         return List.copyOf(patternCollection);
     }
 
-    public DiscoArmorPattern getPattern(String id) {
-        Validate.notNull(id, "id must not be null!");
-        return this.patternMap.getOrDefault(id, null);
+    public @Nullable DiscoArmorPattern getPattern(@NotNull String id) {
+        return this.patternMap.get(id);
     }
 }

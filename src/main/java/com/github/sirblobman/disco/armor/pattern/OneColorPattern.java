@@ -1,11 +1,14 @@
 package com.github.sirblobman.disco.armor.pattern;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.jetbrains.annotations.NotNull;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -13,46 +16,45 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
+import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
 
 public final class OneColorPattern extends DiscoArmorPattern {
-    public OneColorPattern(DiscoArmorPlugin plugin) {
+    public OneColorPattern(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "one_color");
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Map<ArmorType, ItemStack> getNextArmor(@NotNull Player player) {
+        Color nextColor = getNextColor(player);
+        Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
+        ArmorType[] armorTypeArray = ArmorType.values();
+
+        for (ArmorType armorType : armorTypeArray) {
+            ItemStack armor = createArmor(player, armorType, nextColor);
+            armorMap.put(armorType, armor);
+        }
+
+        return Collections.unmodifiableMap(armorMap);
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
         return Component.text("One Color", NamedTextColor.YELLOW);
     }
 
     @Override
-    protected Color getNextColor(Player player) {
+    protected @NotNull Color getNextColor(@NotNull Player player) {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
         int randomColor = rng.nextInt(0xFFFFFF + 1);
         return Color.fromRGB(randomColor);
     }
 
     @Override
-    public Map<ArmorType, ItemStack> getNextArmor(Player player) {
-        Map<ArmorType, ItemStack> armorMap = new EnumMap<>(ArmorType.class);
-        Color nextColor = getNextColor(player);
-
-        ArmorType[] armorTypeArray = ArmorType.values();
-        for (ArmorType armorType : armorTypeArray) {
-            ItemStack armor = createArmor(player, armorType, nextColor);
-            armorMap.put(armorType, armor);
-        }
-
-        return armorMap;
-    }
-
-    @Override
-    protected ItemStack getMenuItem() {
-        Tag<Material> bannerTag = Tag.ITEMS_BANNERS;
-        Set<Material> bannerSet = bannerTag.getValues();
+    protected @NotNull ItemStack getMenuItem() {
+        Set<Material> bannerSet = Tag.ITEMS_BANNERS.getValues();
         List<Material> bannerList = new ArrayList<>(bannerSet);
         int bannerListSize = bannerList.size();
 

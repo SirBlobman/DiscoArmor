@@ -1,11 +1,12 @@
 package com.github.sirblobman.disco.armor.task;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,63 +16,64 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.sirblobman.api.configuration.PlayerDataManager;
+import com.github.sirblobman.api.folia.details.EntityTaskDetails;
 import com.github.sirblobman.api.item.ArmorType;
+import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.api.utility.ItemUtility;
-import com.github.sirblobman.api.utility.Validate;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.pattern.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 
-public final class DiscoArmorTask extends BukkitRunnable {
+public final class DiscoArmorTask extends EntityTaskDetails<ConfigurablePlugin, Player> {
     private final DiscoArmorPlugin plugin;
     private final Map<UUID, ItemStack[]> oldArmorMap;
 
-    public DiscoArmorTask(DiscoArmorPlugin plugin) {
-        this.plugin = Validate.notNull(plugin, "plugin must not be null!");
+    public DiscoArmorTask(@NotNull DiscoArmorPlugin plugin, @NotNull Player player) {
+        super(plugin, player);
+        this.plugin = plugin;
         this.oldArmorMap = new HashMap<>();
     }
 
     @Override
     public void run() {
-        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-        for (Player player : onlinePlayers) {
-            check(player);
-        }
+        check();
     }
 
-    public void disableAll() {
-        Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
-        for (Player player : onlinePlayers) {
-            disable(player);
-        }
-    }
-
-    private DiscoArmorPlugin getPlugin() {
+    private @NotNull DiscoArmorPlugin getDiscoArmor() {
         return this.plugin;
     }
 
     private PlayerDataManager getPlayerDataManager() {
-        DiscoArmorPlugin plugin = getPlugin();
+        DiscoArmorPlugin plugin = getDiscoArmor();
         return plugin.getPlayerDataManager();
     }
 
     private PatternManager getPatternManager() {
-        DiscoArmorPlugin plugin = getPlugin();
+        DiscoArmorPlugin plugin = getDiscoArmor();
         return plugin.getPatternManager();
     }
 
-    public void disable(Player player) {
+    public void disable() {
+        Player player = getEntity();
+        if (player == null) {
+            return;
+        }
+
         PlayerDataManager playerDataManager = getPlayerDataManager();
         YamlConfiguration playerData = playerDataManager.get(player);
         playerData.set("pattern", null);
         playerDataManager.save(player);
-        check(player);
+        check();
     }
 
-    private void check(Player player) {
+    private void check() {
+        Player player = getEntity();
+        if (player == null) {
+            return;
+        }
+
         PlayerDataManager playerDataManager = getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         String patternName = configuration.getString("pattern");
@@ -92,7 +94,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
         nextArmor.forEach((armorType, armor) -> setArmor(player, armorType, armor));
     }
 
-    private void saveOldArmor(Player player) {
+    private void saveOldArmor(@NotNull Player player) {
         UUID playerId = player.getUniqueId();
         if (this.oldArmorMap.containsKey(playerId)) {
             return;
@@ -102,7 +104,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
         this.oldArmorMap.put(playerId, oldArmor);
     }
 
-    private void loadOldArmor(Player player) {
+    private void loadOldArmor(@NotNull Player player) {
         UUID playerId = player.getUniqueId();
         ItemStack[] oldArmor = this.oldArmorMap.remove(playerId);
         if (oldArmor == null) {
@@ -114,7 +116,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
         player.updateInventory();
     }
 
-    private ItemStack[] getArmor(Player player) {
+    private ItemStack @NotNull [] getArmor(@NotNull Player player) {
         PlayerInventory playerInventory = player.getInventory();
         ItemStack[] armorContents = playerInventory.getArmorContents();
         int armorContentsLength = armorContents.length;
@@ -129,7 +131,7 @@ public final class DiscoArmorTask extends BukkitRunnable {
         return armorContents;
     }
 
-    private boolean isDiscoArmor(ItemStack item) {
+    private boolean isDiscoArmor(@Nullable ItemStack item) {
         if (ItemUtility.isAir(item)) {
             return false;
         }
@@ -139,14 +141,14 @@ public final class DiscoArmorTask extends BukkitRunnable {
             return false;
         }
 
-        DiscoArmorPlugin plugin = getPlugin();
+        DiscoArmorPlugin plugin = getDiscoArmor();
         NamespacedKey discoArmorKey = new NamespacedKey(plugin, "disco");
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         byte discoArmor = persistentDataContainer.getOrDefault(discoArmorKey, PersistentDataType.BYTE, (byte) 0);
         return (discoArmor == 1);
     }
 
-    private void setArmor(Player player, ArmorType armorType, ItemStack armor) {
+    private void setArmor(@NotNull Player player, @NotNull ArmorType armorType, @NotNull ItemStack armor) {
         PlayerInventory playerInventory = player.getInventory();
         switch (armorType) {
             case HELMET -> playerInventory.setHelmet(armor);
@@ -156,7 +158,12 @@ public final class DiscoArmorTask extends BukkitRunnable {
         }
     }
 
-    public boolean isEnabled(Player player) {
+    public boolean isEnabled() {
+        Player player = getEntity();
+        if (player == null) {
+            return false;
+        }
+
         PlayerDataManager playerDataManager = getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(player);
         String patternName = configuration.getString("pattern");

@@ -4,38 +4,40 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.command.Command;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.language.replacer.ComponentReplacer;
 import com.github.sirblobman.api.language.replacer.Replacer;
 import com.github.sirblobman.api.language.replacer.StringReplacer;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.manager.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
+import com.github.sirblobman.disco.armor.pattern.PatternManager;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
 
-final class SubCommandAdminOn extends Command {
+public final class SubCommandAdminOn extends Command {
     private final DiscoArmorPlugin plugin;
 
-    public SubCommandAdminOn(DiscoArmorPlugin plugin) {
+    public SubCommandAdminOn(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "on");
         setPermissionName("disco-armor.command.disco-armor.admin.on");
         this.plugin = plugin;
     }
 
     @Override
-    protected List<String> onTabComplete(CommandSender sender, String[] args) {
+    protected @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length == 1) {
             Set<String> valueSet = getOnlinePlayerNames();
             return getMatching(args[0], valueSet);
         }
 
         if (args.length == 2) {
-            PatternManager patternManager = this.plugin.getPatternManager();
+            PatternManager patternManager = getPatternManager();
             List<String> valueList = patternManager.getPatternIds();
             return getMatching(args[1], valueList);
         }
@@ -44,7 +46,7 @@ final class SubCommandAdminOn extends Command {
     }
 
     @Override
-    protected boolean execute(CommandSender sender, String[] args) {
+    protected boolean execute(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length < 2) {
             return false;
         }
@@ -56,7 +58,7 @@ final class SubCommandAdminOn extends Command {
         }
 
         String patternId = args[1].toLowerCase();
-        PatternManager patternManager = this.plugin.getPatternManager();
+        PatternManager patternManager = getPatternManager();
         DiscoArmorPattern pattern = patternManager.getPattern(patternId);
         if (pattern == null) {
             Replacer replacer = new StringReplacer("{pattern}", patternId);
@@ -64,7 +66,7 @@ final class SubCommandAdminOn extends Command {
             return true;
         }
 
-        PlayerDataManager playerDataManager = this.plugin.getPlayerDataManager();
+        PlayerDataManager playerDataManager = getPlayerDataManager();
         YamlConfiguration configuration = playerDataManager.get(target);
         configuration.set("pattern", patternId);
         playerDataManager.save(target);
@@ -74,5 +76,19 @@ final class SubCommandAdminOn extends Command {
         Replacer targetReplacer = new StringReplacer("{target}", targetName);
         sendMessage(sender, "command.admin.change-type", patternReplacer, targetReplacer);
         return true;
+    }
+
+    private @NotNull DiscoArmorPlugin getDiscoArmorPlugin() {
+        return this.plugin;
+    }
+
+    private @NotNull PatternManager getPatternManager() {
+        DiscoArmorPlugin plugin = getDiscoArmorPlugin();
+        return plugin.getPatternManager();
+    }
+
+    private @NotNull PlayerDataManager getPlayerDataManager() {
+        DiscoArmorPlugin plugin = getDiscoArmorPlugin();
+        return plugin.getPlayerDataManager();
     }
 }

@@ -2,33 +2,40 @@ package com.github.sirblobman.disco.armor.menu;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
+import com.github.sirblobman.api.menu.button.AbstractButton;
 import com.github.sirblobman.api.nms.MultiVersionHandler;
+import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.pattern.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
+import com.github.sirblobman.api.shaded.adventure.text.Component;
 
-public final class DiscoArmorMenu extends AbstractMenu {
+public final class DiscoArmorMenu extends AbstractMenu<ConfigurablePlugin> {
     private final DiscoArmorPlugin plugin;
 
-    public DiscoArmorMenu(DiscoArmorPlugin plugin, Player player) {
+    public DiscoArmorMenu(@NotNull DiscoArmorPlugin plugin, @NotNull Player player) {
         super(plugin, player);
         this.plugin = plugin;
     }
 
     @Override
-    public LanguageManager getLanguageManager() {
-        return this.plugin.getLanguageManager();
+    public @NotNull LanguageManager getLanguageManager() {
+        ConfigurablePlugin plugin = getPlugin();
+        return plugin.getLanguageManager();
     }
 
     @Override
-    public MultiVersionHandler getMultiVersionHandler() {
-        return this.plugin.getMultiVersionHandler();
+    public @NotNull MultiVersionHandler getMultiVersionHandler() {
+        ConfigurablePlugin plugin = getPlugin();
+        return plugin.getMultiVersionHandler();
     }
 
     @Override
@@ -39,7 +46,7 @@ public final class DiscoArmorMenu extends AbstractMenu {
     }
 
     @Override
-    public Component getTitle() {
+    public @NotNull Component getTitle() {
         Player player = getPlayer();
         DiscoArmorPlugin plugin = getDiscoArmorPlugin();
         LanguageManager languageManager = plugin.getLanguageManager();
@@ -47,7 +54,7 @@ public final class DiscoArmorMenu extends AbstractMenu {
     }
 
     @Override
-    public ItemStack getItem(int slot) {
+    public @Nullable ItemStack getItem(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
         if (pattern == null) {
             return null;
@@ -57,7 +64,7 @@ public final class DiscoArmorMenu extends AbstractMenu {
     }
 
     @Override
-    public PatternButton getButton(int slot) {
+    public @Nullable AbstractButton getButton(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
         if (pattern == null) {
             return null;
@@ -72,13 +79,17 @@ public final class DiscoArmorMenu extends AbstractMenu {
         return true;
     }
 
-    private DiscoArmorPlugin getDiscoArmorPlugin() {
+    private @NotNull DiscoArmorPlugin getDiscoArmorPlugin() {
         return this.plugin;
     }
 
-    private DiscoArmorPattern getPattern(int slot) {
+    private @NotNull PatternManager getPatternManager() {
         DiscoArmorPlugin plugin = getDiscoArmorPlugin();
-        PatternManager patternManager = plugin.getPatternManager();
+        return plugin.getPatternManager();
+    }
+
+    private @Nullable DiscoArmorPattern getPattern(int slot) {
+        PatternManager patternManager = getPatternManager();
         List<DiscoArmorPattern> patternList = patternManager.getPatterns();
         int patternListSize = patternList.size();
 

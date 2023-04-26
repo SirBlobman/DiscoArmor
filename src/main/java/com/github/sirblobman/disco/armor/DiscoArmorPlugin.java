@@ -2,22 +2,22 @@ package com.github.sirblobman.disco.armor;
 
 import java.util.logging.Logger;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.sirblobman.api.shaded.bstats.bukkit.Metrics;
-import com.github.sirblobman.api.shaded.bstats.charts.SimplePie;
 import com.github.sirblobman.api.configuration.ConfigurationManager;
 import com.github.sirblobman.api.core.CorePlugin;
 import com.github.sirblobman.api.language.Language;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.plugin.ConfigurablePlugin;
-import com.github.sirblobman.api.update.UpdateManager;
+import com.github.sirblobman.api.update.SpigotUpdateManager;
 import com.github.sirblobman.api.utility.VersionUtility;
 import com.github.sirblobman.disco.armor.command.CommandDiscoArmor;
-import com.github.sirblobman.disco.armor.configuration.MainConfiguration;
+import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
 import com.github.sirblobman.disco.armor.listener.ListenerDiscoArmor;
-import com.github.sirblobman.disco.armor.manager.PatternManager;
+import com.github.sirblobman.disco.armor.pattern.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.GrayscalePattern;
 import com.github.sirblobman.disco.armor.pattern.OldGloryPattern;
 import com.github.sirblobman.disco.armor.pattern.OneColorPattern;
@@ -25,19 +25,21 @@ import com.github.sirblobman.disco.armor.pattern.RainbowPattern;
 import com.github.sirblobman.disco.armor.pattern.RandomPattern;
 import com.github.sirblobman.disco.armor.pattern.SmoothPattern;
 import com.github.sirblobman.disco.armor.pattern.YellowOrangePattern;
-import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
+import com.github.sirblobman.disco.armor.task.DiscoArmorTaskManager;
+import com.github.sirblobman.api.shaded.bstats.bukkit.Metrics;
+import com.github.sirblobman.api.shaded.bstats.charts.SimplePie;
 
 public final class DiscoArmorPlugin extends ConfigurablePlugin {
-    private final PatternManager patternManager;
-    private final MainConfiguration configuration;
+    private final DiscoArmorConfiguration configuration;
 
-    private DiscoArmorTask discoArmorTask;
+    private final PatternManager patternManager;
+    private final DiscoArmorTaskManager taskManager;
 
     public DiscoArmorPlugin() {
-        this.patternManager = new PatternManager(this);
-        this.configuration = new MainConfiguration();
+        this.configuration = new DiscoArmorConfiguration();
 
-        this.discoArmorTask = new DiscoArmorTask(this);
+        this.patternManager = new PatternManager(this);
+        this.taskManager = new DiscoArmorTaskManager(this);
     }
 
     @Override
@@ -76,16 +78,6 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
 
     @Override
     public void onDisable() {
-        DiscoArmorTask discoArmorTask = getDiscoArmorTask();
-        if (discoArmorTask != null) {
-            try {
-                discoArmorTask.cancel();
-                discoArmorTask.disableAll();
-            } catch (IllegalStateException ignored) {
-                // Do Nothing
-            }
-        }
-
         broadcastDisabledMessage();
     }
 
@@ -95,25 +87,23 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
         configurationManager.reload("config.yml");
 
         YamlConfiguration configurationFile = configurationManager.get("config.yml");
-        MainConfiguration configuration = getConfiguration();
+        DiscoArmorConfiguration configuration = getConfiguration();
         configuration.load(configurationFile);
 
         LanguageManager languageManager = getLanguageManager();
         languageManager.reloadLanguages();
-
-        registerTasks();
     }
 
-    public PatternManager getPatternManager() {
-        return this.patternManager;
-    }
-
-    public MainConfiguration getConfiguration() {
+    public @NotNull DiscoArmorConfiguration getConfiguration() {
         return this.configuration;
     }
 
-    public DiscoArmorTask getDiscoArmorTask() {
-        return this.discoArmorTask;
+    public @NotNull PatternManager getPatternManager() {
+        return this.patternManager;
+    }
+
+    public @NotNull DiscoArmorTaskManager getTaskManager() {
+        return this.taskManager;
     }
 
     private void registerPatterns() {
@@ -135,28 +125,9 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
         new ListenerDiscoArmor(this).register();
     }
 
-    private void registerTasks() {
-        DiscoArmorTask discoArmorTask = getDiscoArmorTask();
-        if (discoArmorTask != null) {
-            try {
-                discoArmorTask.cancel();
-            } catch (IllegalStateException ignored) {
-                // Do Nothing
-            }
-
-            discoArmorTask.disableAll();
-        }
-
-        MainConfiguration configuration = getConfiguration();
-        long armorSpeed = configuration.getArmorSpeed();
-
-        this.discoArmorTask = new DiscoArmorTask(this);
-        this.discoArmorTask.runTaskTimer(this, 5L, armorSpeed);
-    }
-
     private void registerUpdateChecker() {
         CorePlugin corePlugin = JavaPlugin.getPlugin(CorePlugin.class);
-        UpdateManager updateManager = corePlugin.getUpdateManager();
+        SpigotUpdateManager<?> updateManager = corePlugin.getSpigotUpdateManager();
         updateManager.addResource(this, 60700L);
     }
 
