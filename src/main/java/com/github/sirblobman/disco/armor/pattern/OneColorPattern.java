@@ -18,8 +18,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
 
 public final class OneColorPattern extends DiscoArmorPattern {
     public OneColorPattern(@NotNull DiscoArmorPlugin plugin) {
@@ -38,11 +36,6 @@ public final class OneColorPattern extends DiscoArmorPattern {
         }
 
         return Collections.unmodifiableMap(armorMap);
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        return Component.text("One Color", NamedTextColor.YELLOW);
     }
 
     @Override

@@ -10,12 +10,12 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.menu.AbstractMenu;
-import com.github.sirblobman.api.menu.button.AbstractButton;
+import com.github.sirblobman.api.menu.button.IButton;
 import com.github.sirblobman.api.nms.MultiVersionHandler;
 import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.pattern.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
+import com.github.sirblobman.disco.armor.pattern.PatternManager;
 import com.github.sirblobman.api.shaded.adventure.text.Component;
 
 public final class DiscoArmorMenu extends AbstractMenu<ConfigurablePlugin> {
@@ -60,11 +60,12 @@ public final class DiscoArmorMenu extends AbstractMenu<ConfigurablePlugin> {
             return null;
         }
 
-        return pattern.getMenuIcon();
+        Player player = getPlayer();
+        return pattern.getMenuIcon(player);
     }
 
     @Override
-    public @Nullable AbstractButton getButton(int slot) {
+    public @Nullable IButton getButton(int slot) {
         DiscoArmorPattern pattern = getPattern(slot);
         if (pattern == null) {
             return null;

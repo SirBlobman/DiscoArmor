@@ -52,7 +52,7 @@ public final class PatternButton extends QuickButton {
         configuration.set("pattern", patternId);
         playerDataManager.save(player);
 
-        Component displayName = pattern.getDisplayName();
+        Component displayName = pattern.getDisplayName(player);
         Replacer replacer = new ComponentReplacer("{pattern}", displayName);
         languageManager.sendMessage(player, "command.change-type", replacer);
     }

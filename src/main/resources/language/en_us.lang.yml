@@ -61,3 +61,12 @@ armor-item:
     - "<gray>This is an amazing armor set.</gray>"
     - "<gray>You can only remove it by</gray>"
     - "<gray>typing <green>/disco-armor off</green>.</gray>"
+
+pattern:
+  grayscale: "<gradient:black:gray:white>Grayscale</gradient>"
+  old_glory: "<gradient:#B31942:#FFFFFF:#0A3161>Old Glory</gradient>"
+  one_color: "<yellow>One Color</yellow>"
+  rainbow: "<rainbow>Rainbow</rainbow>"
+  random: "<rainbow:!>Random</rainbow>"
+  smooth: "<light_purple>Smooth</light_purple>"
+  yellow_orange: "<color:#FFFF00>Yellow</color> <color:#FFA500>Orange</color>"

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 import com.github.sirblobman.api.folia.FoliaHelper;
 import com.github.sirblobman.api.folia.scheduler.TaskScheduler;
-import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
 
@@ -46,8 +45,8 @@ public final class DiscoArmorTaskManager {
         long armorSpeed = configuration.getArmorSpeed();
         newTask.setPeriod(armorSpeed);
 
-        FoliaHelper<ConfigurablePlugin> foliaHelper = plugin.getFoliaHelper();
-        TaskScheduler<ConfigurablePlugin> scheduler = foliaHelper.getScheduler();
+        FoliaHelper foliaHelper = plugin.getFoliaHelper();
+        TaskScheduler scheduler = foliaHelper.getScheduler();
         scheduler.scheduleEntityTask(newTask);
 
         UUID playerId = player.getUniqueId();

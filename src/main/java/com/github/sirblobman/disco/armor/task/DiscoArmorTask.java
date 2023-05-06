@@ -20,13 +20,12 @@ import org.bukkit.persistence.PersistentDataType;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.folia.details.EntityTaskDetails;
 import com.github.sirblobman.api.item.ArmorType;
-import com.github.sirblobman.api.plugin.ConfigurablePlugin;
 import com.github.sirblobman.api.utility.ItemUtility;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.pattern.PatternManager;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
+import com.github.sirblobman.disco.armor.pattern.PatternManager;
 
-public final class DiscoArmorTask extends EntityTaskDetails<ConfigurablePlugin, Player> {
+public final class DiscoArmorTask extends EntityTaskDetails<Player> {
     private final DiscoArmorPlugin plugin;
     private final Map<UUID, ItemStack[]> oldArmorMap;
 

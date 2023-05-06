@@ -13,21 +13,11 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.minimessage.MiniMessage;
 
 public final class RandomPattern extends DiscoArmorPattern {
     public RandomPattern(DiscoArmorPlugin plugin) {
         super(plugin, "random");
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        LanguageManager languageManager = getLanguageManager();
-        MiniMessage miniMessage = languageManager.getMiniMessage();
-        return miniMessage.deserialize("<rainbow:!>Random Color</rainbow>");
     }
 
     @Override

@@ -17,9 +17,6 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.TextComponent.Builder;
-import com.github.sirblobman.api.shaded.adventure.text.format.TextColor;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public final class YellowOrangePattern extends DiscoArmorPattern {
@@ -34,18 +31,6 @@ public final class YellowOrangePattern extends DiscoArmorPattern {
     public YellowOrangePattern(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "yellow_orange");
         this.colorMap = new HashMap<>();
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        TextColor yellow = TextColor.color(0xFFFF00);
-        TextColor orange = TextColor.color(0xFFA500);
-
-        Builder builder = Component.text();
-        builder.append(Component.text("Yellow", yellow));
-        builder.append(Component.space());
-        builder.append(Component.text("Orange", orange));
-        return builder.build();
     }
 
     @Override

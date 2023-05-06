@@ -14,10 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.minimessage.MiniMessage;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public final class OldGloryPattern extends DiscoArmorPattern {
@@ -33,13 +30,6 @@ public final class OldGloryPattern extends DiscoArmorPattern {
 
     public OldGloryPattern(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "old_glory");
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        LanguageManager languageManager = getLanguageManager();
-        MiniMessage miniMessage = languageManager.getMiniMessage();
-        return miniMessage.deserialize("<gradient:#B31942:#FFFFFF:#0A3161>Old Glory</gradient>");
     }
 
     @Override

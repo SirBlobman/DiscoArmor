@@ -71,7 +71,7 @@ public final class SubCommandAdminOn extends Command {
         configuration.set("pattern", patternId);
         playerDataManager.save(target);
 
-        Component displayName = pattern.getDisplayName();
+        Component displayName = pattern.getDisplayName(target);
         Replacer patternReplacer = new ComponentReplacer("{pattern}", displayName);
         Replacer targetReplacer = new StringReplacer("{target}", targetName);
         sendMessage(sender, "command.admin.change-type", patternReplacer, targetReplacer);

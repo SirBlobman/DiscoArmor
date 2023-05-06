@@ -13,10 +13,7 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.minimessage.MiniMessage;
 
 public final class RainbowPattern extends DiscoArmorPattern {
     private static final List<Color> RAINBOW_COLOR_LIST;
@@ -34,13 +31,6 @@ public final class RainbowPattern extends DiscoArmorPattern {
 
     public RainbowPattern(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "rainbow");
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        LanguageManager languageManager = getLanguageManager();
-        MiniMessage miniMessage = languageManager.getMiniMessage();
-        return miniMessage.deserialize("<rainbow>Rainbow</rainbow>");
     }
 
     @Override

@@ -10,18 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public final class GrayscalePattern extends DiscoArmorPattern {
     public GrayscalePattern(@NotNull DiscoArmorPlugin plugin) {
         super(plugin, "grayscale");
-    }
-
-    @Override
-    public @NotNull Component getDisplayName() {
-        return Component.text("Grayscale", NamedTextColor.GRAY);
     }
 
     @Override

@@ -65,7 +65,7 @@ public final class SubCommandSelect extends PlayerCommand {
         configuration.set("pattern", patternId);
         playerDataManager.save(player);
 
-        Component displayName = pattern.getDisplayName();
+        Component displayName = pattern.getDisplayName(player);
         Replacer replacer = new ComponentReplacer("{pattern}", displayName);
         sendMessage(player, "command.change-type", replacer);
         return true;

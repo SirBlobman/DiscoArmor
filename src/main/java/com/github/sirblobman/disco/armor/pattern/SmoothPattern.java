@@ -21,8 +21,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.adventure.text.format.NamedTextColor;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public final class SmoothPattern extends DiscoArmorPattern {
@@ -50,12 +48,7 @@ public final class SmoothPattern extends DiscoArmorPattern {
     }
 
     @Override
-    public @NotNull Component getDisplayName() {
-        return Component.text("Smooth", NamedTextColor.LIGHT_PURPLE);
-    }
-
-    @Override
-    protected @NotNull Color getNextColor(Player player) {
+    protected @NotNull Color getNextColor(@NotNull Player player) {
         UUID playerId = player.getUniqueId();
         Color currentColor = this.colorMap.getOrDefault(playerId, this.defaultColor);
 

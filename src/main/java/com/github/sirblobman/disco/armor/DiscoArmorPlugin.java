@@ -127,7 +127,7 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
 
     private void registerUpdateChecker() {
         CorePlugin corePlugin = JavaPlugin.getPlugin(CorePlugin.class);
-        SpigotUpdateManager<?> updateManager = corePlugin.getSpigotUpdateManager();
+        SpigotUpdateManager updateManager = corePlugin.getSpigotUpdateManager();
         updateManager.addResource(this, 60700L);
     }
 

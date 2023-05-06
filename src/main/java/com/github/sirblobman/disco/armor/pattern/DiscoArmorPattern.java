@@ -27,7 +27,6 @@ import com.github.sirblobman.api.nms.MultiVersionHandler;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
 import com.github.sirblobman.api.shaded.adventure.text.Component;
-import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public abstract class DiscoArmorPattern {
     private final String id;
@@ -70,22 +69,21 @@ public abstract class DiscoArmorPattern {
         }
 
         ItemStack baseItem = getMenuItem();
-        ItemBuilder builder = (baseItem == null ? new ItemBuilder(XMaterial.BARRIER) : new ItemBuilder(baseItem));
-
-        DiscoArmorPlugin plugin = getPlugin();
-        MultiVersionHandler multiVersionHandler = plugin.getMultiVersionHandler();
-        ItemHandler itemHandler = multiVersionHandler.getItemHandler();
-
-        Component displayName = getDisplayName();
-        builder = builder.withName(itemHandler, displayName);
+        ItemBuilder builder = new ItemBuilder(baseItem);
 
         ItemFlag[] flags = ItemFlag.values();
         this.itemBuilder = builder.withFlags(flags);
         return this.itemBuilder;
     }
 
-    public final @NotNull ItemStack getMenuIcon() {
-        ItemBuilder builder = getItemBuilder();
+    public final @NotNull ItemStack getMenuIcon(@NotNull Player player) {
+        DiscoArmorPlugin plugin = getPlugin();
+        MultiVersionHandler multiVersionHandler = plugin.getMultiVersionHandler();
+        ItemHandler itemHandler = multiVersionHandler.getItemHandler();
+
+        Component displayName = getDisplayName(player);
+        ItemBuilder builder = new ItemBuilder(getItemBuilder().build());
+        builder = builder.withName(itemHandler, displayName);
         return builder.build();
     }
 
@@ -144,7 +142,11 @@ public abstract class DiscoArmorPattern {
         return Collections.unmodifiableMap(armorMap);
     }
 
-    public abstract @NotNull Component getDisplayName();
+    public @NotNull Component getDisplayName(@NotNull Player player) {
+        String id = getId();
+        LanguageManager languageManager = getLanguageManager();
+        return languageManager.getMessage(player, "pattern." + id);
+    }
 
     protected abstract @NotNull Color getNextColor(@NotNull Player player);
 
