@@ -11,12 +11,13 @@ Disco Armor is a fun plugin that adds leather armor with different colors.
 
 [SIZE=5][B][COLOR=#FF0000]Features:[/COLOR][/B][/SIZE]
 [LIST]
-[*]Seven different disco armor patterns
-[*]Configurable color changing speed
-[*]Steal and drop prevention with configurable message
-[*]Automatically save and return previous armor if player is damaged
-[*]Configurable messages, armor lore, and armor display name
+[*]Seven built-in disco armor patterns.
+[*]Configurable timer for color changing speed.
+[*]Prevents players from stealing and dropping armor.
+[*]Automatically saves and restores previous armor.
+[*]Configurable messages, armor name/lore, and menu text.
 [*]Administrator commands to change and disable player armor.
+[*]Optional glowing effect.
 [/LIST]
 
 [SIZE=5][B][COLOR=#FF0000]Screenshot:[/COLOR][/B][/SIZE]
@@ -33,7 +34,7 @@ Disco Armor is a fun plugin that adds leather armor with different colors.
 [LIST]
 [*][B]/disco-armor glow[/B]: Toggle the enchantment effect on your armor.
 [*][B]/disco-armor off[/B]: Disable your disco armor.
-[*][B]/disco-armor on[/B]: Open the menu to choose a pattern.
+[*][B]/disco-armor on[/B]: Open the disco armor settings menu.
 [*][B]/disco-armor select <pattern>[/B]: Manually choose an armor type.
 [*][B]/disco-armor admin off <player>[/B]: Force a player to stop using disco armor.
 [*][B]/disco-armor admin on <player> <pattern>[/B]: Force a player to use disco armor.

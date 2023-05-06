@@ -1,7 +1,12 @@
 # Disco Armor
 
-**Warning!** If you are prone to epilepsy or seizures, do not use this armor!  
-[Spigot Page](https://www.spigotmc.org/resources/60700/)
+**Warning!** If you are prone to epilepsy or seizures, do not use this armor!
+
+## Downloads
+
+[SpigotMC](https://www.spigotmc.org/resources/60700/)
+[Hangar](https://hangar.papermc.io/SirBlobman/DiscoArmor)
+[Jenkins (Beta)](https://jenkins.sirblobman.xyz/job/SirBlobman/job/DiscoArmor/job/main/)
 
 ## Description:
 
