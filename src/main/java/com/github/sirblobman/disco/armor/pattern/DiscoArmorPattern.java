@@ -21,6 +21,7 @@ import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.api.item.ArmorType;
 import com.github.sirblobman.api.item.ItemBuilder;
 import com.github.sirblobman.api.item.LeatherArmorBuilder;
+import com.github.sirblobman.api.language.ComponentHelper;
 import com.github.sirblobman.api.language.LanguageManager;
 import com.github.sirblobman.api.nms.ItemHandler;
 import com.github.sirblobman.api.nms.MultiVersionHandler;
@@ -77,13 +78,11 @@ public abstract class DiscoArmorPattern {
     }
 
     public final @NotNull ItemStack getMenuIcon(@NotNull Player player) {
-        DiscoArmorPlugin plugin = getPlugin();
-        MultiVersionHandler multiVersionHandler = plugin.getMultiVersionHandler();
-        ItemHandler itemHandler = multiVersionHandler.getItemHandler();
-
         Component displayName = getDisplayName(player);
         ItemBuilder builder = new ItemBuilder(getItemBuilder().build());
-        builder = builder.withName(itemHandler, displayName);
+
+        ItemHandler itemHandler = getItemHandler();
+        builder = builder.withName(itemHandler, ComponentHelper.wrapNoItalics(displayName));
         return builder.build();
     }
 

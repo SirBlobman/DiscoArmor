@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.github.sirblobman.api.command.PlayerCommand;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.menu.DiscoArmorMenu;
+import com.github.sirblobman.disco.armor.menu.DiscoArmorMainMenu;
 
 public final class SubCommandOn extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
@@ -28,7 +28,7 @@ public final class SubCommandOn extends PlayerCommand {
     @Override
     protected boolean execute(@NotNull Player player, String @NotNull [] args) {
         DiscoArmorPlugin plugin = getDiscoArmorPlugin();
-        new DiscoArmorMenu(plugin, player).open();
+        new DiscoArmorMainMenu(plugin, player).open();
         return true;
     }
 

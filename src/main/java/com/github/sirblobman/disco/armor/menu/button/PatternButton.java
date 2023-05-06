@@ -1,4 +1,4 @@
-package com.github.sirblobman.disco.armor.menu;
+package com.github.sirblobman.disco.armor.menu.button;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -26,6 +26,7 @@ error:
   invalid-pattern: "<red><gray>{pattern}</gray> is not a valid pattern.</red>"
   prevent-removal: "<red>You are not allowed to remove your disco armor.</red>"
   no-pattern-permission: "<red>You do not have access to the <gray>{pattern}</gray> permission.</red>"
+  armor-already-disabled: "<red>Your armor is already disabled.</red>"
 
 glow:
   enabled: "<gray>Glow Effect:</gray> <green>ON</green>"
@@ -55,6 +56,14 @@ broadcast:
   disabled: "<bold><dark_red>:(</dark_red></bold>"
 
 menu-title: "<underlined>Disco Armor Menu</underlined>"
+menu-previous-page: "<bold><white>\\<-- Previous Page</white></bold>"
+menu-next-page: "<bold><white>Next Page --\\></white></bold>"
+menu-parent: "<red>Open Previous Menu</red>"
+menu-exit: "<red>Exit Menu</red>"
+menu-disable: "<bold><white>Disable Armor</white></bold>"
+menu-glow: "<bold><white>Toggle Armor Glow</white></bold>"
+menu-select-pattern: "<bold><white>Choose a Pattern</white></bold>"
+
 armor-item:
   display-name: "<rainbow>Disco Armor</rainbow>"
   lore:
