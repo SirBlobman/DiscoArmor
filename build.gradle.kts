@@ -46,7 +46,7 @@ repositories {
 
 dependencies {
     // Java Dependencies
-    compileOnly("org.jetbrains:annotations:24.0.1") // JetBrains Annotations
+    compileOnly("org.jetbrains:annotations:24.1.0") // JetBrains Annotations
 
     // Spigot API
     val spigotVersion = fetchProperty("spigot.version", "")
