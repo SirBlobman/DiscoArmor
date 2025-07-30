@@ -1,0 +1,7 @@
+id: "one_color"
+menu-icon:
+  material-type: TAG_RANDOM
+  tag-key: "minecraft:banners"
+  quantity: 1
+type: BUILT_IN
+built-in-type: ONE_COLOR

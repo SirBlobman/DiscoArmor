@@ -1,0 +1,3 @@
+XMaterial: https://github.com/CryptoMorin/XSeries/blob/af84e0462c3fe2779b979508c6a7ce2e6471b85b/core/src/main/java/com/cryptomorin/xseries/XMaterial.java
+XPatternType: https://github.com/CryptoMorin/XSeries/blob/af84e0462c3fe2779b979508c6a7ce2e6471b85b/core/src/main/java/com/cryptomorin/xseries/XPatternType.java
+DyeColor: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html

@@ -2,7 +2,7 @@
 # Make sure this option is enabled when reporting a bug.
 debug-mode: false
 
-# How long (in ticks) should the time be between color changes?
+# How much time should pass between color changes?
 # 1 = once per tick
 # 20 = once per second
 # 1200 = once per minute
@@ -10,11 +10,11 @@ debug-mode: false
 # Default: 5
 armor-speed: 5
 
-# Should disco armor be disabled if a player takes damage?
+# Should the plugin turn off a player's disco armor if they take damage?
 disable-on-damage: true
 
 # Requires 'disable-on-damage: true'
-# Should Disco Armor prevent the first hit when a player is wearing disco armor?
+# Should the plugin prevent the first hit when a player is wearing disco armor?
 prevent-first-hit: true
 
 # Should disco armor have a LUCK enchantment and a HIDE_ENCHANTS flag?

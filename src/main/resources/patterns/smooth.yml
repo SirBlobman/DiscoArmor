@@ -1,0 +1,11 @@
+id: "smooth"
+menu-icon:
+  material-type: DEFAULT
+  material: RED_BANNER
+  banner-layers:
+    1:
+      color: BLUE
+      pattern-type: GRADIENT
+  quantity: 1
+type: BUILT_IN
+built-in-type: SMOOTH

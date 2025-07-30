@@ -1,0 +1,14 @@
+id: "old_glory"
+menu-icon:
+  material-type: DEFAULT
+  material: RED_BANNER
+  quantity: 1
+  banner-layers:
+    1:
+      color: WHITE
+      pattern-type: SMALL_STRIPES
+    2:
+      color: BLUE
+      pattern-type: SQUARE_TOP_LEFT
+type: BUILT_IN
+built-in-type: OLD_GLORY

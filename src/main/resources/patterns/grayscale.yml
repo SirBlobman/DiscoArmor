@@ -1,0 +1,7 @@
+id: "grayscale"
+menu-icon:
+  material-type: DEFAULT
+  material: GRAY_BANNER
+  quantity: 1
+type: BUILT_IN
+built-in-type: GRAYSCALE

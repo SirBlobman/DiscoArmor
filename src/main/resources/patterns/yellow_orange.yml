@@ -1,0 +1,11 @@
+id: "yellow_orange"
+menu-icon:
+  material-type: DEFAULT
+  material: YELLOW_BANNER
+  banner-layers:
+    1:
+      color: ORANGE
+      pattern-type: GRADIENT
+  quantity: 1
+type: BUILT_IN
+built-in-type: YELLOW_ORANGE
