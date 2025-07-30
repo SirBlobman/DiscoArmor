@@ -58,6 +58,7 @@ public final class DiscoArmorTaskManager {
         DiscoArmorTask discoArmorTask = getTask(player);
         if (discoArmorTask != null) {
             discoArmorTask.cancel();
+            discoArmorTask.disable();
             this.taskMap.remove(playerId);
         }
     }

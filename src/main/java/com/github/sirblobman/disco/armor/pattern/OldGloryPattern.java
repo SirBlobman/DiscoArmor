@@ -3,6 +3,7 @@ package com.github.sirblobman.disco.armor.pattern;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
+import com.github.sirblobman.api.shaded.xseries.XPatternType;
 
 public final class OldGloryPattern extends DiscoArmorPattern {
     private static final Color OLD_GLORY_RED;
@@ -56,13 +58,24 @@ public final class OldGloryPattern extends DiscoArmorPattern {
             return new ItemStack(Material.BARRIER);
         }
 
-        Pattern whiteStripeSmall = new Pattern(DyeColor.WHITE, PatternType.STRIPE_SMALL);
-        bannerMeta.addPattern(whiteStripeSmall);
+        Pattern smallStripesWhite = getPattern(DyeColor.WHITE, XPatternType.SMALL_STRIPES);
+        Pattern squareTopLeftBlue = getPattern(DyeColor.BLUE, XPatternType.SQUARE_TOP_LEFT);
+        if (smallStripesWhite == null || squareTopLeftBlue == null) {
+            return new ItemStack(Material.BARRIER);
+        }
 
-        Pattern blueSquareTopLeft = new Pattern(DyeColor.BLUE, PatternType.SQUARE_TOP_LEFT);
-        bannerMeta.addPattern(blueSquareTopLeft);
-
+        bannerMeta.addPattern(smallStripesWhite);
+        bannerMeta.addPattern(squareTopLeftBlue);
         item.setItemMeta(bannerMeta);
         return item;
+    }
+
+    private @Nullable Pattern getPattern(@NotNull DyeColor color, @NotNull XPatternType patternType) {
+        PatternType patternTypeBukkit = patternType.get();
+        if (patternTypeBukkit == null) {
+            return null;
+        }
+
+        return new Pattern(color, patternTypeBukkit);
     }
 }

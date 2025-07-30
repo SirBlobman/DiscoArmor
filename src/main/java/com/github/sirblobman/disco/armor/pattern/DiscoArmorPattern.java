@@ -13,7 +13,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -122,6 +127,16 @@ public abstract class DiscoArmorPattern {
             NamespacedKey discoArmorKey = new NamespacedKey(plugin, "disco");
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             persistentDataContainer.set(discoArmorKey, PersistentDataType.BYTE, (byte) 1);
+
+            if (itemMeta instanceof ArmorMeta armorMeta) {
+                // Example Setup
+                ArmorTrim armorTrim = new ArmorTrim(TrimMaterial.AMETHYST, TrimPattern.EYE);
+                armorMeta.setTrim(armorTrim);
+
+                // Example Removal
+                armorMeta.setTrim(null);
+            }
+
             builder.withItemMeta(itemMeta);
         }
 
