@@ -14,12 +14,8 @@ Disco Armor is a fun plugin that puts leather armor on players. The armor will w
 
 ### Supported Versions
 
-Disco Armor support Spigot, Paper, and Folia.  
-Other custom forks may work, but they are untested and support will not be provided.  
-The following Minecraft versions are currently supported:
-
-- 1.18.2
-- 1.19.4
+Disco Armor is built with support for Spigot, Paper, and Folia v1.21.8.
+Other custom forks may work, but they are untested and support will not be provided.
 
 ### Features
 
