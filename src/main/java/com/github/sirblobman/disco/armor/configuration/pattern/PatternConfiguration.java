@@ -30,7 +30,7 @@ public final class PatternConfiguration implements IConfigurable {
         menuIconConfiguration.load(menuIconSection);
         setMenuIcon(menuIconConfiguration);
 
-        String patternTypeName = section.getString("type", "BUILD_IN");
+        String patternTypeName = section.getString("type", "BUILT_IN");
     }
 
     public @NotNull String getId() {
@@ -61,7 +61,7 @@ public final class PatternConfiguration implements IConfigurable {
         this.builtInType = builtInType;
     }
 
-    public @Nullable List<CustomPattern> getCustomPatternList() {
+    public @NotNull List<CustomPattern> getCustomPatternList() {
         return Collections.unmodifiableList(this.patternList);
     }
 

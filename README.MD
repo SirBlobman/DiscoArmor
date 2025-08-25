@@ -4,23 +4,24 @@
 
 ## Downloads
 
-[SpigotMC](https://www.spigotmc.org/resources/60700/)
 [Hangar](https://hangar.papermc.io/SirBlobman/DiscoArmor)
-[Jenkins (Beta)](https://jenkins.sirblobman.xyz/job/SirBlobman/job/DiscoArmor/job/main/)
+[Jenkins Beta](https://jenkins.sirblobman.xyz/job/SirBlobman/job/DiscoArmor/job/main/)
 
 ## Description:
 
 Disco Armor is a fun plugin that puts leather armor on players. The armor will with change colors on a timer.
 
-### Supported Versions
+### Requirements
 
-Disco Armor is built with support for Spigot, Paper, and Folia v1.21.8.
-Other custom forks may work, but they are untested and support will not be provided.
+- Java 21
+- BlueSlimeCore v2.9.8
+- Paper or Folia v1.21.8
 
 ### Features
 
 - Seven built-in disco armor patterns.
-- Configurable timer for color changing speed.
+- Endless configurable custom patterns.
+- Configurable timers for color changing speed.
 - Prevents players from stealing and dropping armor.
 - Automatically saves and restores previous armor.
 - Configurable messages, armor name/lore, and menu text.
