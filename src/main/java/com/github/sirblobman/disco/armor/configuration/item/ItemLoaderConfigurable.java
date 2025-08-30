@@ -1,13 +1,12 @@
 package com.github.sirblobman.disco.armor.configuration.item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
-import javax.naming.Name;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,16 +21,51 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Axolotl;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.AxolotlBucketMeta;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockDataMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.BundleMeta;
+import org.bukkit.inventory.meta.ColorableArmorMeta;
+import org.bukkit.inventory.meta.CompassMeta;
+import org.bukkit.inventory.meta.CrossbowMeta;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.KnowledgeBookMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.inventory.meta.MusicInstrumentMeta;
+import org.bukkit.inventory.meta.OminousBottleMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.ShieldMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
+import org.bukkit.inventory.meta.SuspiciousStewMeta;
+import org.bukkit.inventory.meta.TropicalFishBucketMeta;
+import org.bukkit.inventory.meta.WritableBookMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.inventory.meta.components.EquippableComponent;
+import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.JukeboxPlayableComponent;
+import org.bukkit.inventory.meta.components.ToolComponent;
+import org.bukkit.inventory.meta.components.UseCooldownComponent;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.tag.DamageTypeTags;
+import org.bukkit.util.NumberConversions;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 
@@ -41,10 +75,8 @@ import com.github.sirblobman.api.utility.ConfigurationHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.slf4j.LoggerFactory;
 
 public class ItemLoaderConfigurable extends ItemLoader {
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ItemLoaderConfigurable.class);
     private final MiniMessage miniMessage;
 
     public ItemLoaderConfigurable(@NotNull IMultiVersionPlugin plugin) {
@@ -94,15 +126,12 @@ public class ItemLoaderConfigurable extends ItemLoader {
         loadDamageResistances(itemStack, section);
         loadMaxStackSize(itemStack, section);
         loadRarity(itemStack, section);
+        loadEnchantable(itemStack, section);
 
         // Component Meta
-        loadEnchantableComponent(itemStack, section);
         loadUseCooldownComponent(itemStack, section);
         loadFoodComponent(itemStack, section);
-        loadConsumableComponent(itemStack, section);
         loadToolComponent(itemStack, section);
-        loadWeaponComponent(itemStack, section);
-        loadBlocksAttacksComponent(itemStack, section);
         loadEquippableComponent(itemStack, section);
         loadJukeboxPlayableComponent(itemStack, section);
 
@@ -603,5 +632,546 @@ public class ItemLoaderConfigurable extends ItemLoader {
         ItemRarity rarity = ConfigurationHelper.parseEnum(ItemRarity.class, rarityName, ItemRarity.COMMON);
         itemMeta.setRarity(rarity);
         itemStack.setItemMeta(itemMeta);
+    }
+
+    private void loadEnchantable(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        if (!section.isSet("enchantable")) {
+            return;
+        }
+
+        int defaultEnchantable = itemMeta.getEnchantable();
+        int enchantable = section.getInt("enchantable", defaultEnchantable);
+        itemMeta.setEnchantable(enchantable);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void loadUseCooldownComponent(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        if (!section.isSet("components.use-cooldown")) {
+            return;
+        }
+
+        ConfigurationSection componentSection = section.getConfigurationSection("components.use-cooldown");
+        if (componentSection == null) {
+            return;
+        }
+
+        UseCooldownComponent useCooldownComponent = itemMeta.getUseCooldown();
+
+        if (componentSection.isSet("group")) {
+            String groupKeyString = componentSection.getString("group");
+            if (groupKeyString != null) {
+                NamespacedKey groupKey = NamespacedKey.fromString(groupKeyString);
+                if (groupKey != null) {
+                    useCooldownComponent.setCooldownGroup(groupKey);
+                }
+            }
+        }
+
+        if (componentSection.isSet("seconds")) {
+            float seconds = getFloat(componentSection, "seconds");
+            useCooldownComponent.setCooldownSeconds(seconds);
+        }
+
+        itemMeta.setUseCooldown(useCooldownComponent);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    private float getFloat(@NotNull ConfigurationSection section, @NotNull String path) {
+        Object object = section.get(path, 0.0F);
+        return (object instanceof Number) ? NumberConversions.toFloat(object) : 0.0F;
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void loadFoodComponent(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        if (!section.isSet("components.food")) {
+            return;
+        }
+
+        ConfigurationSection componentSection = section.getConfigurationSection("components.food");
+        if (componentSection == null) {
+            return;
+        }
+
+        boolean canAlwaysEat = componentSection.getBoolean("can-always-eat", false);
+        int nutrition = componentSection.getInt("nutrition", 0);
+        float saturation = getFloat(componentSection, "saturation");
+
+        FoodComponent foodComponent = itemMeta.getFood();
+        foodComponent.setCanAlwaysEat(canAlwaysEat);
+        foodComponent.setNutrition(nutrition);
+        foodComponent.setSaturation(saturation);
+
+        itemMeta.setFood(foodComponent);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void loadToolComponent(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        if (!section.isSet("components.tool")) {
+            return;
+        }
+
+        ConfigurationSection componentSection = section.getConfigurationSection("components.tool");
+        if (componentSection == null) {
+            return;
+        }
+
+        int damagePerBlock = componentSection.getInt("damage-per-block");
+        float defaultMiningSpeed = getFloat(componentSection, "default-mining-speed");
+
+        ToolComponent toolComponent = itemMeta.getTool();
+        toolComponent.setDamagePerBlock(damagePerBlock);
+        toolComponent.setDefaultMiningSpeed(defaultMiningSpeed);
+
+        if (componentSection.isSet("rules")) {
+            List<ToolComponent.ToolRule> toolRuleList = parseRulesList(componentSection.getList("rules"));
+            toolComponent.setRules(toolRuleList);
+        }
+
+        itemMeta.setTool(toolComponent);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private List<ToolComponent.ToolRule> parseRulesList(@Nullable List<?> list) {
+        if (list == null) {
+            return Collections.emptyList();
+        }
+
+        int listSize = list.size();
+        List<ToolComponent.ToolRule> toolRuleList = new ArrayList<>(listSize);
+
+        for (Object object : list) {
+            if (object instanceof ToolComponent.ToolRule toolRule) {
+                toolRuleList.add(toolRule);
+            }
+        }
+
+        return toolRuleList;
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void loadEquippableComponent(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        if (!section.isSet("components.equippable")) {
+            return;
+        }
+
+        ConfigurationSection componentSection = section.getConfigurationSection("components.equippable");
+        if (componentSection == null) {
+            return;
+        }
+
+        EquippableComponent equippableComponent = itemMeta.getEquippable();
+        // TODO
+//        equippableComponent.setAllowedEntities(allowedEntityList);
+//        equippableComponent.setDispensable(dispensable);
+//        equippableComponent.setSlot(equipmentSlot);
+//        equippableComponent.setCameraOverlay(cameraOverlayKey);
+//        equippableComponent.setDamageOnHurt(damageOnHurt);
+//        equippableComponent.setEquipOnInteract(equipOnInteract);
+//        equippableComponent.setEquipSound(equipSound);
+//        equippableComponent.setModel(modelKey);
+//        equippableComponent.setSwappable(swappable);
+
+        itemMeta.setEquippable(equippableComponent);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void loadJukeboxPlayableComponent(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        if (!section.isSet("components.jukebox-playable")) {
+            return;
+        }
+
+        ConfigurationSection componentSection = section.getConfigurationSection("components.jukebox-playable");
+        if (componentSection == null) {
+            return;
+        }
+
+        // TODO
+        JukeboxPlayableComponent jukeboxPlayableComponent = itemMeta.getJukeboxPlayable();
+//        jukeboxPlayableComponent.setSongKey(songKey);
+
+        itemMeta.setJukeboxPlayable(jukeboxPlayableComponent);
+        itemStack.setItemMeta(itemMeta);
+    }
+
+    private void loadArmorMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof ArmorMeta armorMeta)) {
+            return;
+        }
+
+        if (!section.isSet("armor-trim")) {
+            return;
+        }
+
+        ConfigurationSection armorTrimSection = section.getConfigurationSection("armor-trim");
+        if (armorTrimSection == null) {
+            return;
+        }
+
+        String trimMaterialKeyString = armorTrimSection.getString("material", "minecraft:amethyst");
+        String trimPatternKeyString = armorTrimSection.getString("pattern", "minecraft:eye");
+        NamespacedKey trimMaterialKey = NamespacedKey.fromString(trimMaterialKeyString);
+        NamespacedKey trimPatternKey = NamespacedKey.fromString(trimPatternKeyString);
+        Logger logger = getLogger();
+
+        if (trimMaterialKey == null) {
+            logger.warning("Invalid trim material key '" + trimMaterialKeyString + "'.");
+            return;
+        }
+
+        if (trimPatternKey == null) {
+            logger.warning("Invalid trim pattern key '" + trimPatternKeyString + "'.");
+            return;
+        }
+
+        RegistryAccess registryAccess = RegistryAccess.registryAccess();
+        Registry<@NotNull TrimMaterial> registryMaterial = registryAccess.getRegistry(RegistryKey.TRIM_MATERIAL);
+        Registry<@NotNull TrimPattern> registryPattern = registryAccess.getRegistry(RegistryKey.TRIM_PATTERN);
+
+        TrimMaterial trimMaterial = registryMaterial.get(trimMaterialKey);
+        if (trimMaterial == null) {
+            logger.warning("Unknown trim material with key '" + trimMaterialKeyString + "'.");
+            return;
+        }
+
+        TrimPattern trimPattern = registryPattern.get(trimPatternKey);
+        if (trimPattern == null) {
+            logger.warning("Unknown trim pattern with key '" + trimPatternKeyString + "'.");
+            return;
+        }
+
+        ArmorTrim armorTrim = new ArmorTrim(trimMaterial, trimPattern);
+        armorMeta.setTrim(armorTrim);
+        itemStack.setItemMeta(armorMeta);
+    }
+
+    private void loadAxolotlBucketMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof AxolotlBucketMeta axolotlBucketMeta)) {
+            return;
+        }
+
+        if (!section.isSet("axolotl-variant")) {
+            return;
+        }
+
+        String variantName = section.getString("axolotl-variant", "WILD");
+        Axolotl.Variant variant = ConfigurationHelper.parseEnum(Axolotl.Variant.class, variantName, Axolotl.Variant.WILD);
+        axolotlBucketMeta.setVariant(variant);
+
+        itemStack.setItemMeta(axolotlBucketMeta);
+    }
+
+    private void loadBannerMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof BannerMeta bannerMeta)) {
+            return;
+        }
+
+        if (!section.isSet("banner")) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(bannerMeta);
+    }
+
+    private void loadBlockDataMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof BlockDataMeta blockDataMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(blockDataMeta);
+    }
+
+    private void loadBlockStateMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof BlockStateMeta blockStateMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(blockStateMeta);
+    }
+
+    private void loadBookMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof BookMeta bookMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(bookMeta);
+    }
+
+    private void loadBundleMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof BundleMeta bundleMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(bundleMeta);
+    }
+
+    private void loadColorableArmorMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof ColorableArmorMeta colorableArmorMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(colorableArmorMeta);
+    }
+
+    private void loadCompassMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof CompassMeta compassMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(compassMeta);
+    }
+
+    private void loadCrossbowMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof CrossbowMeta crossbowMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(crossbowMeta);
+    }
+
+    private void loadDamageableMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof Damageable damageable)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(damageable);
+    }
+
+    private void loadEnchantmentStorageMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof EnchantmentStorageMeta enchantmentStorageMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(enchantmentStorageMeta);
+    }
+
+    private void loadFireworkEffectMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof FireworkEffectMeta fireworkEffectMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(fireworkEffectMeta);
+    }
+
+    private void loadFireworkMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof FireworkMeta fireworkMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(fireworkMeta);
+    }
+
+    private void loadKnowledgeBookMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof KnowledgeBookMeta knowledgeBookMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(knowledgeBookMeta);
+    }
+
+    private void loadLeatherArmorMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof LeatherArmorMeta leatherArmorMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(leatherArmorMeta);
+    }
+
+    private void loadMapMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof MapMeta mapMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(mapMeta);
+    }
+
+    private void loadMusicInstrumentMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof MusicInstrumentMeta musicInstrumentMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(musicInstrumentMeta);
+    }
+
+    private void loadOminousBottleMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof OminousBottleMeta ominousBottleMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(ominousBottleMeta);
+    }
+
+    private void loadPotionMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof PotionMeta potionMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(potionMeta);
+    }
+
+    private void loadRepairableMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof Repairable repairable)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(repairable);
+    }
+
+    private void loadShieldMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof ShieldMeta shieldMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(shieldMeta);
+    }
+
+    private void loadSkullMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof SkullMeta skullMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(skullMeta);
+    }
+
+    private void loadSpawnEggMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof SpawnEggMeta spawnEggMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(spawnEggMeta);
+    }
+
+    private void loadSuspiciousStewMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof SuspiciousStewMeta suspiciousStewMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(suspiciousStewMeta);
+    }
+
+    private void loadTropicalFishBucketMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof TropicalFishBucketMeta tropicalFishBucketMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(tropicalFishBucketMeta);
+    }
+
+    private void loadWritableBookMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (!(itemMeta instanceof WritableBookMeta writableBookMeta)) {
+            return;
+        }
+
+        // TODO
+
+        itemStack.setItemMeta(writableBookMeta);
     }
 }
