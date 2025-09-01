@@ -1,14 +1,14 @@
 id: "old_glory"
 menu-icon:
-  material-type: DEFAULT
-  material: RED_BANNER
+  item-type: ITEM
+  id: "minecraft:red_banner"
   quantity: 1
-  banner-layers:
+  banner-patterns:
     1:
       color: WHITE
-      pattern-type: SMALL_STRIPES
+      pattern-type: "minecraft:small_stripes"
     2:
       color: BLUE
-      pattern-type: SQUARE_TOP_LEFT
+      pattern-type: "minecraft:square_top_left"
 type: BUILT_IN
 built-in-type: OLD_GLORY

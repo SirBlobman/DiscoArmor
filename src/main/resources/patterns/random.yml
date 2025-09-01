@@ -1,7 +1,7 @@
 id: "random"
 menu-icon:
-  material-type: TAG_RANDOM
-  tag-key: "minecraft:banners"
+  item-type: TAG
+  tag: "minecraft:banners"
   quantity: 1
 type: BUILT_IN
 built-in-type: RANDOM

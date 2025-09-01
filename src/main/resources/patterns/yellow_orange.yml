@@ -1,11 +1,11 @@
 id: "yellow_orange"
 menu-icon:
-  material-type: DEFAULT
-  material: YELLOW_BANNER
-  banner-layers:
+  item-type: ITEM
+  id: "minecraft:yellow_banner"
+  banner-patterns:
     1:
       color: ORANGE
-      pattern-type: GRADIENT
+      pattern-type: "minecraft:gradient"
   quantity: 1
 type: BUILT_IN
 built-in-type: YELLOW_ORANGE

@@ -1,7 +1,7 @@
 id: "custom_example"
 menu-icon:
-  type: MATERIAL
-  material: PLAYER_HEAD
+  item-type: ITEM
+  id: "minecraft:player_head"
   quantity: 1
   # Base64 Player Head Skin Texture URL
   skin: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTE1MjA5NDFlMDZlM2I2YWVkODJiNDYwMjdhNzZiOGJlMWZiNzg2MzVjZmQ2YjcxY2NmZTU5NTA5MTM0MGQ3YyJ9fX0="

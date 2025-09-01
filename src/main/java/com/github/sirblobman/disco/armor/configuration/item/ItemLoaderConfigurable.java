@@ -3,7 +3,9 @@ package com.github.sirblobman.disco.armor.configuration.item;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -13,12 +15,19 @@ import org.jetbrains.annotations.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
+import org.bukkit.MusicInstrument;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
@@ -30,13 +39,9 @@ import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.BlockDataMeta;
-import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BundleMeta;
-import org.bukkit.inventory.meta.ColorableArmorMeta;
 import org.bukkit.inventory.meta.CompassMeta;
-import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
@@ -44,14 +49,12 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.KnowledgeBookMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.bukkit.inventory.meta.OminousBottleMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.meta.ShieldMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.bukkit.inventory.meta.WritableBookMeta;
@@ -64,8 +67,13 @@ import org.bukkit.inventory.meta.components.UseCooldownComponent;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.tag.DamageTypeTags;
 import org.bukkit.util.NumberConversions;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 
@@ -139,32 +147,43 @@ public class ItemLoaderConfigurable extends ItemLoader {
         loadArmorMeta(itemStack, section);
         loadAxolotlBucketMeta(itemStack, section);
         loadBannerMeta(itemStack, section);
-        loadBlockDataMeta(itemStack, section);
-        loadBlockStateMeta(itemStack, section);
         loadBookMeta(itemStack, section);
         loadBundleMeta(itemStack, section);
-        loadColorableArmorMeta(itemStack, section);
         loadCompassMeta(itemStack, section);
-        loadCrossbowMeta(itemStack, section);
         loadDamageableMeta(itemStack, section);
         loadEnchantmentStorageMeta(itemStack, section);
         loadFireworkEffectMeta(itemStack, section);
         loadFireworkMeta(itemStack, section);
         loadKnowledgeBookMeta(itemStack, section);
         loadLeatherArmorMeta(itemStack, section);
-        loadMapMeta(itemStack, section);
         loadMusicInstrumentMeta(itemStack, section);
         loadOminousBottleMeta(itemStack, section);
         loadPotionMeta(itemStack, section);
         loadRepairableMeta(itemStack, section);
         loadShieldMeta(itemStack, section);
         loadSkullMeta(itemStack, section);
-        loadSpawnEggMeta(itemStack, section);
         loadSuspiciousStewMeta(itemStack, section);
         loadTropicalFishBucketMeta(itemStack, section);
         loadWritableBookMeta(itemStack, section);
 
         return itemStack;
+    }
+
+    private <T extends ConfigurationSerializable> @NotNull List<T> parseSerializableList(@NotNull Class<T> clazz, @NotNull ConfigurationSection section, @NotNull String path) {
+        List<?> objectList = section.getList(path);
+        if (objectList == null) {
+            return new ArrayList<>();
+        }
+
+        List<T> serializableList = new ArrayList<>(objectList.size());
+        for (Object object : objectList) {
+            if (clazz.isInstance(object)) {
+                T serializable = clazz.cast(object);
+                serializableList.add(serializable);
+            }
+        }
+
+        return serializableList;
     }
 
     private void loadAttributeModifiers(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -501,6 +520,11 @@ public class ItemLoaderConfigurable extends ItemLoader {
         return colors;
     }
 
+    /**
+     * Parse a color from a string.
+     * @param string A string in the format of "alpha;red;green;blue" which are four integers between 0-255.
+     * @return A {@link Color} value from the parsed ARGB values.
+     */
     private @Nullable Color parseColor(@NotNull String string) {
         String[] split = string.split(Pattern.quote(";"), 3);
         if (split.length != 4) {
@@ -902,35 +926,53 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        if (!section.isSet("banner")) {
+        if (!section.isSet("banner-patterns")) {
             return;
         }
 
-        // TODO
+        ConfigurationSection bannerPatternsSection = section.getConfigurationSection("banner-patterns");
+        if (bannerPatternsSection == null) {
+            return;
+        }
+
+        Set<String> bannerPatternKeySet = bannerPatternsSection.getKeys(false);
+        for (String bannerPatternKey : bannerPatternKeySet) {
+            ConfigurationSection bannerPatternSection = bannerPatternsSection.getConfigurationSection(bannerPatternKey);
+            if (bannerPatternSection == null) {
+                continue;
+            }
+
+            org.bukkit.block.banner.Pattern pattern = parseBannerPattern(bannerPatternSection);
+            if (pattern != null) {
+                bannerMeta.addPattern(pattern);
+            }
+        }
 
         itemStack.setItemMeta(bannerMeta);
     }
 
-    private void loadBlockDataMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof BlockDataMeta blockDataMeta)) {
-            return;
+    private @Nullable org.bukkit.block.banner.Pattern parseBannerPattern(@NotNull ConfigurationSection section) {
+        String colorName = section.getString("color", "WHITE");
+        DyeColor color = ConfigurationHelper.parseEnum(DyeColor.class, colorName, DyeColor.WHITE);
+
+        String patternKeyString = section.getString("pattern", "minecraft:base");
+        NamespacedKey patternKey = NamespacedKey.fromString(patternKeyString);
+        Logger logger = getLogger();
+
+        if (patternKey == null) {
+            logger.warning("Invalid banner pattern key format '" + patternKeyString + "'.");
+            return null;
         }
 
-        // TODO
-
-        itemStack.setItemMeta(blockDataMeta);
-    }
-
-    private void loadBlockStateMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof BlockStateMeta blockStateMeta)) {
-            return;
+        RegistryAccess registryAccess = RegistryAccess.registryAccess();
+        Registry<@NotNull PatternType> registry = registryAccess.getRegistry(RegistryKey.BANNER_PATTERN);
+        PatternType patternType = registry.get(patternKey);
+        if (patternType == null) {
+            logger.warning("Unknown banner pattern with key '" + patternKeyString + "'.");
+            return null;
         }
 
-        // TODO
-
-        itemStack.setItemMeta(blockStateMeta);
+        return new org.bukkit.block.banner.Pattern(color, patternType);
     }
 
     private void loadBookMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -939,7 +981,34 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("title")) {
+            String titleText = section.getString("title");
+            if (titleText != null && !titleText.isBlank()) {
+                Component title = parseComponent(titleText);
+                bookMeta.title(title);
+            }
+        }
+
+        if (section.isSet("author")) {
+            String authorText = section.getString("author");
+            if (authorText != null && !authorText.isBlank()) {
+                Component author = parseComponent(authorText);
+                bookMeta.author(author);
+            }
+        }
+
+        if (section.isSet("generation")) {
+            String generationName = section.getString("generation", "ORIGINAL");
+            BookMeta.Generation generation = ConfigurationHelper.parseEnum(BookMeta.Generation.class, generationName, BookMeta.Generation.ORIGINAL);
+            bookMeta.setGeneration(generation);
+        }
+
+        if (section.isSet("pages")) {
+            List<String> pageTextList = section.getStringList("pages");
+            List<Component> pages = parseComponents(pageTextList);
+            Component[] pageArray = pages.toArray(Component[]::new);
+            bookMeta.addPages(pageArray);
+        }
 
         itemStack.setItemMeta(bookMeta);
     }
@@ -950,20 +1019,14 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
-
-        itemStack.setItemMeta(bundleMeta);
-    }
-
-    private void loadColorableArmorMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof ColorableArmorMeta colorableArmorMeta)) {
-            return;
+        if (section.isSet("bundle-items")) {
+            List<ItemStack> itemList = parseSerializableList(ItemStack.class, section, "bundle-items");
+            bundleMeta.setItems(itemList);
         }
 
         // TODO
 
-        itemStack.setItemMeta(colorableArmorMeta);
+        itemStack.setItemMeta(bundleMeta);
     }
 
     private void loadCompassMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -972,20 +1035,23 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
-
-        itemStack.setItemMeta(compassMeta);
-    }
-
-    private void loadCrossbowMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof CrossbowMeta crossbowMeta)) {
+        if (!section.isSet("compass")) {
             return;
         }
 
-        // TODO
+        ConfigurationSection compassSection = section.getConfigurationSection("compass");
+        if (compassSection == null) {
+            return;
+        }
 
-        itemStack.setItemMeta(crossbowMeta);
+        boolean lodestoneTracked = compassSection.getBoolean("lodestone");
+        Location location = compassSection.getSerializable("lodestone-location", Location.class);
+        if (location != null) {
+            compassMeta.setLodestoneTracked(lodestoneTracked);
+            compassMeta.setLodestone(location);
+        }
+
+        itemStack.setItemMeta(compassMeta);
     }
 
     private void loadDamageableMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -994,7 +1060,21 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("max-damage")) {
+            int defaultMaxDamage = damageable.getMaxDamage();
+            int maxDamage = section.getInt("max-damage", defaultMaxDamage);
+            damageable.setMaxDamage(maxDamage);
+        }
+
+        if (section.isSet("damage")) {
+            int maxDamage = damageable.getMaxDamage();
+            int damage = section.getInt("damage", 0);
+            if (damage > maxDamage) {
+                damage = maxDamage;
+            }
+
+            damageable.setDamage(damage);
+        }
 
         itemStack.setItemMeta(damageable);
     }
@@ -1005,9 +1085,52 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        ConfigurationSection enchantmentsSection = section.getConfigurationSection("stored-enchantments");
+        if (enchantmentsSection == null) {
+            return;
+        }
+
+        Set<String> enchantmentConfigurationKeySet = enchantmentsSection.getKeys(false);
+        for (String configurationKey : enchantmentConfigurationKeySet) {
+            ConfigurationSection enchantmentSection = enchantmentsSection.getConfigurationSection(configurationKey);
+            if (enchantmentSection == null) {
+                continue;
+            }
+
+            loadStoredEnchantment(enchantmentStorageMeta, section);
+        }
 
         itemStack.setItemMeta(enchantmentStorageMeta);
+    }
+
+    private void loadStoredEnchantment(@NotNull EnchantmentStorageMeta itemMeta, @NotNull ConfigurationSection section) {
+        Logger logger = getLogger();
+        String enchantmentKeyString = section.getString("id", "minecraft:sharpness");
+        NamespacedKey enchantmentKey = NamespacedKey.fromString(enchantmentKeyString);
+        if (enchantmentKey == null) {
+            logger.warning("Invalid enchantment id format '" + enchantmentKeyString + "'.");
+            return;
+        }
+
+        RegistryAccess registryAccess = RegistryAccess.registryAccess();
+        Registry<@NotNull Enchantment> registry = registryAccess.getRegistry(RegistryKey.ENCHANTMENT);
+        Enchantment enchantment = registry.get(enchantmentKey);
+        if (enchantment == null) {
+            logger.warning("Unknown or unregistered enchantment id '" + enchantmentKeyString + "'.");
+            return;
+        }
+
+        if (itemMeta.hasConflictingEnchant(enchantment)) {
+            logger.warning("This item has an enchantment that conflicts with '" + enchantmentKeyString + "'.");
+        }
+
+        int level = section.getInt("level");
+        boolean unsafe = section.getBoolean("unsafe", false);
+        boolean enchant = itemMeta.addStoredEnchant(enchantment, level, unsafe);
+        if (!enchant) {
+            logger.info("Failed to enchant with enchantment '"
+                    + enchantmentKeyString + "' and level '" + level + "'.");
+        }
     }
 
     private void loadFireworkEffectMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -1016,7 +1139,10 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("firework-effect")) {
+            FireworkEffect effect = section.getSerializable("firework-effect", FireworkEffect.class);
+            fireworkEffectMeta.setEffect(effect);
+        }
 
         itemStack.setItemMeta(fireworkEffectMeta);
     }
@@ -1027,7 +1153,15 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("firework-power")) {
+            int power = section.getInt("firework-power");
+            fireworkMeta.setPower(power);
+        }
+
+        if (section.isSet("firework-effects")) {
+            List<FireworkEffect> effectList = parseSerializableList(FireworkEffect.class, section, "firework-effects");
+            fireworkMeta.addEffects(effectList);
+        }
 
         itemStack.setItemMeta(fireworkMeta);
     }
@@ -1038,7 +1172,12 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("knowledge-book-recipes")) {
+            List<String> recipeKeyStringList = section.getStringList("knowledge-book-recipes");
+            List<NamespacedKey> recipeKeyList = recipeKeyStringList.stream().map(NamespacedKey::fromString)
+                    .filter(Objects::nonNull).toList();
+            knowledgeBookMeta.setRecipes(recipeKeyList);
+        }
 
         itemStack.setItemMeta(knowledgeBookMeta);
     }
@@ -1049,20 +1188,13 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
-
-        itemStack.setItemMeta(leatherArmorMeta);
-    }
-
-    private void loadMapMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof MapMeta mapMeta)) {
-            return;
+        if (section.isSet("color")) {
+            String colorString = section.getString("color", "255;0;0;0");
+            Color color = parseColor(colorString);
+            leatherArmorMeta.setColor(color);
         }
 
-        // TODO
-
-        itemStack.setItemMeta(mapMeta);
+        itemStack.setItemMeta(leatherArmorMeta);
     }
 
     private void loadMusicInstrumentMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -1071,7 +1203,26 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("music-instrument")) {
+            String instrumentKeyString = section.getString("music-instrument", "minecraft:call_goat_horn");
+            NamespacedKey instrumentKey = NamespacedKey.fromString(instrumentKeyString);
+            Logger logger = getLogger();
+
+            if (instrumentKey == null) {
+                logger.warning("Invalid music instrument key '" + instrumentKeyString + "'.");
+                return;
+            }
+
+            RegistryAccess registryAccess = RegistryAccess.registryAccess();
+            Registry<@NotNull MusicInstrument> registry = registryAccess.getRegistry(RegistryKey.INSTRUMENT);
+            MusicInstrument instrument = registry.get(instrumentKey);
+            if (instrument == null) {
+                logger.warning("Unknown music instrument with key '" + instrumentKeyString + "'.");
+                return;
+            }
+
+            musicInstrumentMeta.setInstrument(instrument);
+        }
 
         itemStack.setItemMeta(musicInstrumentMeta);
     }
@@ -1082,7 +1233,10 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("ominous-amplifier")) {
+            int amplifier = section.getInt("ominous-amplifier");
+            ominousBottleMeta.setAmplifier(amplifier);
+        }
 
         itemStack.setItemMeta(ominousBottleMeta);
     }
@@ -1093,9 +1247,91 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (!section.isSet("potion")) {
+            return;
+        }
+
+        Logger logger = getLogger();
+        ConfigurationSection potionSection = section.getConfigurationSection("potion");
+        if (potionSection == null) {
+            return;
+        }
+
+        if (potionSection.isSet("base-type")) {
+            String potionTypeKeyString = potionSection.getString("base-type", "minecraft:water");
+            NamespacedKey potionTypeKey = NamespacedKey.fromString(potionTypeKeyString);
+            if (potionTypeKey == null) {
+                logger.warning("Invalid potion type key '" + potionTypeKeyString + "'.");
+                return;
+            }
+
+            RegistryAccess registryAccess = RegistryAccess.registryAccess();
+            Registry<@NotNull PotionType> registry = registryAccess.getRegistry(RegistryKey.POTION);
+            PotionType potionType = registry.get(potionTypeKey);
+            if (potionType == null) {
+                logger.warning("Unknown potion type with key '" + potionTypeKeyString + "'.");
+                return;
+            }
+
+            potionMeta.setBasePotionType(potionType);
+        }
+
+        if (potionSection.isSet("custom-effects")) {
+            ConfigurationSection customEffectsSection = potionSection.getConfigurationSection("custom-effects");
+            if (customEffectsSection != null) {
+                Set<String> customEffectKeySet = customEffectsSection.getKeys(false);
+                for (String customEffectKey : customEffectKeySet) {
+                    ConfigurationSection customEffectSection = customEffectsSection.getConfigurationSection(customEffectKey);
+                    if (customEffectSection == null) {
+                        continue;
+                    }
+
+                    PotionEffect potionEffect = parsePotionEffect(customEffectSection);
+                    if (potionEffect != null) {
+                        potionMeta.addCustomEffect(potionEffect, true);
+                    }
+                }
+            }
+        }
+
+        if (potionSection.isSet("color")) {
+            String colorString = section.getString("color", "255;0;0;0");
+            Color color = parseColor(colorString);
+            potionMeta.setColor(color);
+        }
+
+        if (potionSection.isSet("translation-suffix")) {
+            String customName = section.getString("translation-suffix");
+            potionMeta.setCustomPotionName(customName);
+        }
 
         itemStack.setItemMeta(potionMeta);
+    }
+
+    private @Nullable PotionEffect parsePotionEffect(@NotNull ConfigurationSection section) {
+        String effectTypeKeyString = section.getString("effect-type", "minecraft:speed");
+        NamespacedKey effectTypeKey = NamespacedKey.fromString(effectTypeKeyString);
+        Logger logger = getLogger();
+
+        if (effectTypeKey == null) {
+            logger.warning("Invalid potion effect key '" + effectTypeKeyString + "'.");
+            return null;
+        }
+
+        RegistryAccess registryAccess = RegistryAccess.registryAccess();
+        Registry<@NotNull PotionEffectType> registry = registryAccess.getRegistry(RegistryKey.MOB_EFFECT);
+        PotionEffectType effectType = registry.get(effectTypeKey);
+        if (effectType == null) {
+            logger.warning("Unknown potion effect with key '" + effectTypeKeyString + "'.");
+            return null;
+        }
+
+        int duration = section.getInt("duration", 0);
+        int amplifier = section.getInt("amplifier", 0);
+        boolean ambient = section.getBoolean("ambient", false);
+        boolean particles = section.getBoolean("particles",true);
+        boolean icon = section.getBoolean("icon", true);
+        return new PotionEffect(effectType, duration, amplifier, ambient, particles, icon);
     }
 
     private void loadRepairableMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -1104,7 +1340,10 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("repair-cost")) {
+            int repairCost = section.getInt("repair-cost", 0);
+            repairable.setRepairCost(repairCost);
+        }
 
         itemStack.setItemMeta(repairable);
     }
@@ -1115,7 +1354,11 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("base-color")) {
+            String baseColorName = section.getString("base-color", "WHITE");
+            DyeColor baseColor = ConfigurationHelper.parseEnum(DyeColor.class, baseColorName, DyeColor.WHITE);
+            shieldMeta.setBaseColor(baseColor);
+        }
 
         itemStack.setItemMeta(shieldMeta);
     }
@@ -1126,25 +1369,61 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("skull-owner")) {
+            String ownerName = section.getString("skull-owner");
+            if (ownerName != null) {
+                OfflinePlayer player = Bukkit.getOfflinePlayer(ownerName);
+                skullMeta.setOwningPlayer(player);
+            }
+        }
+
+         if (section.isSet("skin")) {
+             String skinBase64 = section.getString("skin");
+             if (skinBase64 != null && !skinBase64.isBlank()) {
+                 UUID uniqueId = loadProfileSkinUniqueId(section);
+                 String skinName = section.getString("skin-name", "custom");
+
+                 PlayerProfile profile = Bukkit.createProfileExact(uniqueId, skinName);
+                 ProfileProperty textures = new ProfileProperty("textures", skinBase64);
+                 profile.setProperty(textures);
+
+                 skullMeta.setPlayerProfile(profile);
+             }
+         }
 
         itemStack.setItemMeta(skullMeta);
     }
 
-    private void loadSpawnEggMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        if (!(itemMeta instanceof SpawnEggMeta spawnEggMeta)) {
-            return;
+    private @NotNull UUID loadProfileSkinUniqueId(@NotNull ConfigurationSection section) {
+        if (!section.isSet("skin-uuid")) {
+            return UUID.randomUUID();
         }
 
-        // TODO
+        String uuidString = section.getString("skin-uuid");
+        if (uuidString == null || uuidString.isBlank()) {
+            return UUID.randomUUID();
+        }
 
-        itemStack.setItemMeta(spawnEggMeta);
+        try {
+            return UUID.fromString(uuidString);
+        } catch (IllegalArgumentException ex) {
+            getLogger().warning("Invalid UUID format '" + uuidString + "'.");
+            return UUID.randomUUID();
+        }
     }
 
     private void loadSuspiciousStewMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (!(itemMeta instanceof SuspiciousStewMeta suspiciousStewMeta)) {
+            return;
+        }
+
+        if (!section.isSet("custom-stew-effects")) {
+            return;
+        }
+
+        ConfigurationSection customStewEffectsSection = section.getConfigurationSection("custom-stew-effects");
+        if (customStewEffectsSection == null) {
             return;
         }
 
@@ -1170,7 +1449,15 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (itemMeta instanceof BookMeta) {
+            // Books that are already written are also somehow 'WritableBookMeta'.
+            return;
+        }
+
+        if (section.isSet("pages")) {
+            List<String> pages = section.getStringList("pages");
+            writableBookMeta.setPages(pages);
+        }
 
         itemStack.setItemMeta(writableBookMeta);
     }

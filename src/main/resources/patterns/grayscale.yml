@@ -1,6 +1,6 @@
 id: "grayscale"
 menu-icon:
-  material-type: DEFAULT
+  item-type: ITEM
   material: GRAY_BANNER
   quantity: 1
 type: BUILT_IN
