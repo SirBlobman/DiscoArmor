@@ -1,48 +1,117 @@
 package com.github.sirblobman.disco.armor.configuration.pattern;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Constructor;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.sirblobman.api.configuration.IConfigurable;
+import com.github.sirblobman.api.plugin.IMultiVersionPlugin;
+import com.github.sirblobman.api.utility.ConfigurationHelper;
+import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.configuration.item.ItemLoader;
+import com.github.sirblobman.disco.armor.configuration.item.ItemType;
+import com.github.sirblobman.disco.armor.configuration.pattern.custom.ArmorSlot;
 import com.github.sirblobman.disco.armor.configuration.pattern.custom.CustomPattern;
+import com.github.sirblobman.disco.armor.configuration.pattern.custom.CustomPatternCopy;
+import com.github.sirblobman.disco.armor.configuration.pattern.custom.CustomPatternFixed;
+import com.github.sirblobman.disco.armor.configuration.pattern.custom.CustomPatternFrames;
+import com.github.sirblobman.disco.armor.configuration.pattern.custom.CustomPatternType;
 
 public final class PatternConfiguration implements IConfigurable {
     private final String id;
-    private MenuIconConfiguration menuIcon;
+    private final DiscoArmorPlugin plugin;
+    private final Map<ArmorSlot, CustomPattern> patternMap;
+
+    private ItemStack menuIcon;
     private PatternType patternType;
     private BuiltInType builtInType;
-    private List<CustomPattern> patternList;
 
-    public PatternConfiguration(@NotNull String id) {
+    public PatternConfiguration(@NotNull DiscoArmorPlugin plugin, @NotNull String id) {
         this.id = id;
+        this.plugin = plugin;
+        this.patternMap = new EnumMap<>(ArmorSlot.class);
     }
 
     @Override
     public void load(@NotNull ConfigurationSection section) {
-        ConfigurationSection menuIconSection = getOrCreateSection(section, "menu-icon");
-        MenuIconConfiguration menuIconConfiguration = new MenuIconConfiguration();
-        menuIconConfiguration.load(menuIconSection);
-        setMenuIcon(menuIconConfiguration);
+        DiscoArmorPlugin plugin = getPlugin();
+        Logger logger = plugin.getLogger();
+
+        try {
+            ConfigurationSection menuIconSection = getOrCreateSection(section, "menu-icon");
+            String itemTypeName = menuIconSection.getString("item-type", "ITEM");
+            ItemType itemType = ConfigurationHelper.parseEnum(ItemType.class, itemTypeName, ItemType.ITEM);
+
+            Class<? extends ItemLoader> loaderClass = itemType.getLoaderClass();
+            Constructor<? extends ItemLoader> constructor = loaderClass.getConstructor(IMultiVersionPlugin.class);
+            ItemLoader itemLoader = constructor.newInstance(plugin);
+            this.menuIcon = itemLoader.loadItemStack(menuIconSection);
+            if (this.menuIcon == null) {
+                logger.warning("Failed to load menu icon for pattern '" + getId() + "'.");
+                return;
+            }
+        } catch (ReflectiveOperationException ex) {
+            logger.log(Level.WARNING, "Failed to load menu icon:", ex);
+            return;
+        }
 
         String patternTypeName = section.getString("type", "BUILT_IN");
+        PatternType patternType = ConfigurationHelper.parseEnum(PatternType.class, patternTypeName, PatternType.BUILT_IN);
+        setPatternType(patternType);
+
+        if (patternType == PatternType.CUSTOM && section.isSet("custom-patterns")) {
+            ConfigurationSection customPatternsSection = getOrCreateSection(section, "custom-patterns");
+            ArmorSlot[] armorSlotValues = ArmorSlot.values();
+            for (ArmorSlot armorSlot : armorSlotValues) {
+                String key = armorSlot.name();
+                ConfigurationSection customPatternSection = getOrCreateSection(customPatternsSection, key);
+                CustomPattern customPattern = parseCustomPattern(armorSlot, customPatternSection);
+                if (customPattern != null) {
+                    setCustomPattern(armorSlot, customPattern);
+                }
+            }
+        }
+    }
+
+    private @NotNull DiscoArmorPlugin getPlugin() {
+        return this.plugin;
+    }
+
+    private @Nullable CustomPattern parseCustomPattern(@NotNull ArmorSlot slot, @NotNull ConfigurationSection section) {
+        String typeName = section.getString("type");
+        if (typeName == null || typeName.isBlank()) {
+            return null;
+        }
+
+        CustomPatternType customPatternType = ConfigurationHelper.parseEnum(CustomPatternType.class, typeName, null);
+        if (customPatternType == null) {
+            return null;
+        }
+
+        CustomPattern pattern = switch (customPatternType) {
+            case FRAMES -> new CustomPatternFrames(slot);
+            case COPY -> new CustomPatternCopy(slot);
+            case FIXED -> new CustomPatternFixed(slot);
+        };
+
+        pattern.load(section);
+        return pattern;
     }
 
     public @NotNull String getId() {
         return this.id;
     }
 
-    public @NotNull MenuIconConfiguration getMenuIcon() {
+    public @NotNull ItemStack getMenuIcon() {
         return this.menuIcon;
-    }
-
-    public void setMenuIcon(@NotNull MenuIconConfiguration menuIcon) {
-        this.menuIcon = menuIcon;
     }
 
     public @NotNull PatternType getPatternType() {
@@ -61,15 +130,15 @@ public final class PatternConfiguration implements IConfigurable {
         this.builtInType = builtInType;
     }
 
-    public @NotNull List<CustomPattern> getCustomPatternList() {
-        return Collections.unmodifiableList(this.patternList);
+    public @Nullable CustomPattern getCustomPattern(@NotNull ArmorSlot slot) {
+        return this.patternMap.get(slot);
     }
 
-    public void setCustomPatternList(@Nullable List<CustomPattern> customPatternList) {
-        if (customPatternList == null) {
-            this.patternList = null;
+    public void setCustomPattern(@NotNull ArmorSlot slot, @Nullable CustomPattern pattern) {
+        if(pattern == null) {
+            this.patternMap.remove(slot);
         } else {
-            this.patternList = new ArrayList<>(customPatternList);
+            this.patternMap.put(slot, pattern);
         }
     }
 }

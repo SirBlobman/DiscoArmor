@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -14,6 +13,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 
 import com.github.sirblobman.api.configuration.IConfigurable;
 
@@ -61,14 +62,14 @@ public final class Frame implements IConfigurable {
         }
 
         String materialKeyString = split[0];
-        TrimMaterial material = parseRegistryValue(TrimMaterial.class, materialKeyString);
+        TrimMaterial material = parseRegistryValue(RegistryKey.TRIM_MATERIAL, materialKeyString);
         if (material == null) {
             // Trim material must be registered.
             return null;
         }
 
         String patternKeyString = split[1];
-        TrimPattern pattern = parseRegistryValue(TrimPattern.class, patternKeyString);
+        TrimPattern pattern = parseRegistryValue(RegistryKey.TRIM_PATTERN, patternKeyString);
         if (pattern == null) {
             // Trim pattern must be registered.
             return null;
@@ -77,16 +78,13 @@ public final class Frame implements IConfigurable {
         return new ArmorTrim(material, pattern);
     }
 
-    private <T extends Keyed> @Nullable T parseRegistryValue(@NotNull Class<T> registryClass, @Nullable String key) {
+    private <T extends Keyed> @Nullable T parseRegistryValue(@NotNull RegistryKey<@NotNull T> registryType, @Nullable String key) {
         if (key == null || key.isBlank()) {
             return null;
         }
 
-        Registry<T> registry = Bukkit.getRegistry(registryClass);
-        if (registry == null) {
-            return null;
-        }
-
+        RegistryAccess registryAccess = RegistryAccess.registryAccess();
+        Registry<@NotNull T> registry = registryAccess.getRegistry(registryType);
         NamespacedKey namespacedKey = NamespacedKey.fromString(key);
         if (namespacedKey == null) {
             return null;

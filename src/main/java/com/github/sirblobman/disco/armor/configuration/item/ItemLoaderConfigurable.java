@@ -22,6 +22,7 @@ import org.bukkit.MusicInstrument;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -31,6 +32,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Axolotl;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.TropicalFish;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemRarity;
@@ -74,6 +78,7 @@ import org.bukkit.tag.DamageTypeTags;
 import org.bukkit.util.NumberConversions;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import io.papermc.paper.potion.SuspiciousEffectEntry;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 
@@ -812,16 +817,72 @@ public class ItemLoaderConfigurable extends ItemLoader {
         }
 
         EquippableComponent equippableComponent = itemMeta.getEquippable();
-        // TODO
-//        equippableComponent.setAllowedEntities(allowedEntityList);
-//        equippableComponent.setDispensable(dispensable);
-//        equippableComponent.setSlot(equipmentSlot);
-//        equippableComponent.setCameraOverlay(cameraOverlayKey);
-//        equippableComponent.setDamageOnHurt(damageOnHurt);
-//        equippableComponent.setEquipOnInteract(equipOnInteract);
-//        equippableComponent.setEquipSound(equipSound);
-//        equippableComponent.setModel(modelKey);
-//        equippableComponent.setSwappable(swappable);
+        if (componentSection.isSet("allowed-entities")) {
+            List<String> allowNameList = componentSection.getStringList("allowed-entities");
+            Set<EntityType> allowList = ConfigurationHelper.parseEnums(allowNameList, EntityType.class);
+            equippableComponent.setAllowedEntities(allowList);
+        }
+
+        if (componentSection.isSet("dispensable")) {
+            boolean dispensable = componentSection.getBoolean("dispensable", false);
+            equippableComponent.setDispensable(dispensable);
+        }
+
+        if (componentSection.isSet("slot")) {
+            String slotName = componentSection.getString("slot", "HAND");
+            EquipmentSlot slot = ConfigurationHelper.parseEnum(EquipmentSlot.class, slotName, EquipmentSlot.HAND);
+            equippableComponent.setSlot(slot);
+        }
+
+        if (componentSection.isSet("camera-overlay")) {
+            String cameraOverlayKeyString = componentSection.getString("camera-overlay");
+            if (cameraOverlayKeyString != null && !cameraOverlayKeyString.isBlank()) {
+                NamespacedKey cameraOverlayKey = NamespacedKey.fromString(cameraOverlayKeyString);
+                if (cameraOverlayKey != null) {
+                    equippableComponent.setCameraOverlay(cameraOverlayKey);
+                }
+            }
+        }
+
+        if (componentSection.isSet("damage-on-hurt")) {
+            boolean damageOnHurt = componentSection.getBoolean("damage-on-hurt", false);
+            equippableComponent.setDamageOnHurt(damageOnHurt);
+        }
+
+        if (componentSection.isSet("equip-on-interact")) {
+            boolean equipOnInteract = componentSection.getBoolean("equip-on-interact", false);
+            equippableComponent.setEquipOnInteract(equipOnInteract);
+        }
+
+        if (componentSection.isSet("equip-sound")) {
+            String soundKeyString = componentSection.getString("equip-sound");
+            if (soundKeyString != null && !soundKeyString.isBlank()) {
+                NamespacedKey soundKey = NamespacedKey.fromString(soundKeyString);
+                if (soundKey != null) {
+                    RegistryAccess registryAccess = RegistryAccess.registryAccess();
+                    Registry<@NotNull Sound> registry = registryAccess.getRegistry(RegistryKey.SOUND_EVENT);
+                    Sound sound = registry.get(soundKey);
+                    if (sound != null) {
+                        equippableComponent.setEquipSound(sound);
+                    }
+                }
+            }
+        }
+
+        if (componentSection.isSet("model")) {
+            String modelKeyString = componentSection.getString("model");
+            if (modelKeyString != null && !modelKeyString.isBlank()) {
+                NamespacedKey modelKey = NamespacedKey.fromString(modelKeyString);
+                if (modelKey != null) {
+                    equippableComponent.setModel(modelKey);
+                }
+            }
+        }
+
+        if (section.isSet("swappable")) {
+            boolean swappable = section.getBoolean("swappable", false);
+            equippableComponent.setSwappable(swappable);
+        }
 
         itemMeta.setEquippable(equippableComponent);
         itemStack.setItemMeta(itemMeta);
@@ -838,14 +899,18 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        ConfigurationSection componentSection = section.getConfigurationSection("components.jukebox-playable");
-        if (componentSection == null) {
+        String songKeyString = section.getString("components.jukebox-playable");
+        if (songKeyString == null || songKeyString.isBlank()) {
             return;
         }
 
-        // TODO
+        NamespacedKey songKey = NamespacedKey.fromString(songKeyString);
+        if (songKey == null) {
+            return;
+        }
+
         JukeboxPlayableComponent jukeboxPlayableComponent = itemMeta.getJukeboxPlayable();
-//        jukeboxPlayableComponent.setSongKey(songKey);
+        jukeboxPlayableComponent.setSongKey(songKey);
 
         itemMeta.setJukeboxPlayable(jukeboxPlayableComponent);
         itemStack.setItemMeta(itemMeta);
@@ -1023,8 +1088,6 @@ public class ItemLoaderConfigurable extends ItemLoader {
             List<ItemStack> itemList = parseSerializableList(ItemStack.class, section, "bundle-items");
             bundleMeta.setItems(itemList);
         }
-
-        // TODO
 
         itemStack.setItemMeta(bundleMeta);
     }
@@ -1427,9 +1490,42 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        Set<String> customStewEffectKeySet = customStewEffectsSection.getKeys(false);
+        for (String key : customStewEffectKeySet) {
+            ConfigurationSection customStewEffectSection = customStewEffectsSection.getConfigurationSection(key);
+            if (customStewEffectSection == null) {
+                continue;
+            }
+
+            SuspiciousEffectEntry entry = parseSuspiciousStewEffect(customStewEffectSection);
+            if (entry != null) {
+                suspiciousStewMeta.addCustomEffect(entry, true);
+            }
+        }
 
         itemStack.setItemMeta(suspiciousStewMeta);
+    }
+
+    private @Nullable SuspiciousEffectEntry parseSuspiciousStewEffect(@NotNull ConfigurationSection section) {
+        String effectTypeKeyString = section.getString("effect-type", "minecraft:speed");
+        NamespacedKey effectTypeKey = NamespacedKey.fromString(effectTypeKeyString);
+        Logger logger = getLogger();
+
+        if (effectTypeKey == null) {
+            logger.warning("Invalid potion effect key '" + effectTypeKeyString + "'.");
+            return null;
+        }
+
+        RegistryAccess registryAccess = RegistryAccess.registryAccess();
+        Registry<@NotNull PotionEffectType> registry = registryAccess.getRegistry(RegistryKey.MOB_EFFECT);
+        PotionEffectType effectType = registry.get(effectTypeKey);
+        if (effectType == null) {
+            logger.warning("Unknown potion effect with key '" + effectTypeKeyString + "'.");
+            return null;
+        }
+
+        int duration = section.getInt("duration", 0);
+        return SuspiciousEffectEntry.create(effectType, duration);
     }
 
     private void loadTropicalFishBucketMeta(@NotNull ItemStack itemStack, @NotNull ConfigurationSection section) {
@@ -1438,7 +1534,23 @@ public class ItemLoaderConfigurable extends ItemLoader {
             return;
         }
 
-        // TODO
+        if (section.isSet("tropical-fish.pattern")) {
+            String patternString = section.getString("tropical-fish-pattern", "KOB");
+            TropicalFish.Pattern pattern = ConfigurationHelper.parseEnum(TropicalFish.Pattern.class, patternString, TropicalFish.Pattern.KOB);
+            tropicalFishBucketMeta.setPattern(pattern);
+        }
+
+        if (section.isSet("tropical-fish.pattern-color")) {
+            String colorString = section.getString("tropical-fish.pattern-color", "WHITE");
+            DyeColor color = ConfigurationHelper.parseEnum(DyeColor.class, colorString, DyeColor.WHITE);
+            tropicalFishBucketMeta.setPatternColor(color);
+        }
+
+        if (section.isSet("tropical-fish.body-color")) {
+            String colorString = section.getString("tropical-fish.body-color", "WHITE");
+            DyeColor color = ConfigurationHelper.parseEnum(DyeColor.class, colorString, DyeColor.WHITE);
+            tropicalFishBucketMeta.setBodyColor(color);
+        }
 
         itemStack.setItemMeta(tropicalFishBucketMeta);
     }

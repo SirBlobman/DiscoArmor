@@ -2,6 +2,8 @@ package com.github.sirblobman.disco.armor.configuration.item;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+
 import org.bukkit.inventory.ItemStack;
 
 public enum ItemType {
@@ -12,7 +14,7 @@ public enum ItemType {
      * Example: "minecraft:red_banner"<br/>
      * @see org.bukkit.Material
      */
-    ITEM,
+    ITEM(ItemLoaderConfigurable.class),
 
     /**
      * Random Tag Item Type.<br/>
@@ -21,7 +23,7 @@ public enum ItemType {
      * Example: "minecraft:wool"<br/>
      * @see org.bukkit.Tag
      */
-    TAG,
+    TAG(ItemLoaderTag.class),
 
     /**
      * Base64 Item Type.<br/>
@@ -31,7 +33,7 @@ public enum ItemType {
      * Example: "H4sIAAAAAAAA...."<br/>
      * @see com.github.sirblobman.api.nms.ItemHandler#fromBase64String(String) 
      */
-    BASE64,
+    BASE64(ItemLoaderBase64.class),
 
     /**
      * Mojangson NBT Item Type.<br/>
@@ -41,7 +43,7 @@ public enum ItemType {
      * Example: '{"id":"minecraft:wool","Count":"1b"}'<br/>
      * @see com.github.sirblobman.api.nms.ItemHandler#fromNBT(String) 
      */
-    NBT_JSON,
+    NBT_JSON(ItemLoaderNbtJson.class),
 
     /**
      * Bukkit YAML Item Type
@@ -50,5 +52,15 @@ public enum ItemType {
      * @see ItemStack#deserialize(Map)
      * @see ItemStack#serialize()
      */
-    YAML
+    YAML(ItemLoaderYaml.class);
+
+    private final Class<? extends ItemLoader> loaderClass;
+
+    ItemType(Class<? extends ItemLoader> loaderClass) {
+        this.loaderClass = loaderClass;
+    }
+
+    public @NotNull Class<? extends ItemLoader> getLoaderClass() {
+        return this.loaderClass;
+    }
 }
