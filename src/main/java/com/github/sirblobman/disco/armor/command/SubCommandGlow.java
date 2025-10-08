@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.github.sirblobman.api.command.PlayerCommand;
 import com.github.sirblobman.api.configuration.PlayerDataManager;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.configuration.playerdata.MemoryData;
+import com.github.sirblobman.disco.armor.configuration.playerdata.MemoryDataManager;
 
 public final class SubCommandGlow extends PlayerCommand {
     private final DiscoArmorPlugin plugin;
@@ -28,12 +29,13 @@ public final class SubCommandGlow extends PlayerCommand {
 
     @Override
     protected boolean execute(@NotNull Player player, String @NotNull [] args) {
-        PlayerDataManager playerDataManager = getPlayerDataManager();
-        YamlConfiguration configuration = playerDataManager.get(player);
-        boolean glowing = !configuration.getBoolean("glowing");
+        DiscoArmorPlugin plugin = getDiscoArmorPlugin();
+        MemoryDataManager memoryDataManager = plugin.getMemoryDataManager();
+        MemoryData data = memoryDataManager.getData(player);
 
-        configuration.set("glowing", glowing);
-        playerDataManager.save(player);
+        boolean glowing = !data.isGlowingArmor();
+        data.setGlowingArmor(glowing);
+        memoryDataManager.saveData(player);
 
         String messagePath = (glowing ? "glow.enabled" : "glow.disabled");
         sendMessage(player, messagePath);

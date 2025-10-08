@@ -20,6 +20,7 @@ import com.github.sirblobman.api.menu.button.PreviousPageButton;
 import com.github.sirblobman.api.nms.ItemHandler;
 import com.github.sirblobman.api.nms.MultiVersionHandler;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
+import com.github.sirblobman.disco.armor.configuration.pattern.PatternConfiguration;
 import com.github.sirblobman.disco.armor.menu.button.PatternButton;
 import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
 import com.github.sirblobman.disco.armor.pattern.PatternManager;
@@ -27,7 +28,7 @@ import com.github.sirblobman.api.shaded.adventure.text.Component;
 import com.github.sirblobman.api.shaded.xseries.XMaterial;
 
 public final class DiscoArmorPatternMenu extends AbstractPagedMenu<DiscoArmorPlugin> {
-    private final List<DiscoArmorPattern> patternList;
+    private final List<PatternConfiguration> patternList;
 
     public DiscoArmorPatternMenu(@NotNull DiscoArmorMainMenu parentMenu, @NotNull DiscoArmorPlugin plugin,
                                  @NotNull Player player) {
@@ -61,7 +62,7 @@ public final class DiscoArmorPatternMenu extends AbstractPagedMenu<DiscoArmorPlu
 
     @Override
     public int getMaxPages() {
-        List<DiscoArmorPattern> patternList = getPatterns();
+        List<PatternConfiguration> patternList = getPatterns();
         int patternListSize = patternList.size();
 
         int divide = (patternListSize / 9);
@@ -85,12 +86,11 @@ public final class DiscoArmorPatternMenu extends AbstractPagedMenu<DiscoArmorPlu
             int startIndex = ((page - 1) * 9);
             int index = (startIndex + slot);
 
-            List<DiscoArmorPattern> patternList = getPatterns();
+            List<PatternConfiguration> patternList = getPatterns();
             int patternListSize = patternList.size();
             if (index < patternListSize) {
-                Player player = getPlayer();
-                DiscoArmorPattern pattern = patternList.get(index);
-                return pattern.getMenuIcon(player);
+                PatternConfiguration pattern = patternList.get(index);
+                return pattern.getMenuIcon();
             }
         }
 
@@ -118,11 +118,11 @@ public final class DiscoArmorPatternMenu extends AbstractPagedMenu<DiscoArmorPlu
             int startIndex = ((page - 1) * 9);
             int index = (startIndex + slot);
 
-            List<DiscoArmorPattern> patternList = getPatterns();
+            List<PatternConfiguration> patternList = getPatterns();
             int patternListSize = patternList.size();
             if (index < patternListSize) {
                 DiscoArmorPlugin plugin = getPlugin();
-                DiscoArmorPattern pattern = patternList.get(index);
+                PatternConfiguration pattern = patternList.get(index);
                 return new PatternButton(plugin, pattern);
             }
         }
@@ -147,7 +147,7 @@ public final class DiscoArmorPatternMenu extends AbstractPagedMenu<DiscoArmorPlu
         return true;
     }
 
-    private @NotNull List<DiscoArmorPattern> getPatterns() {
+    private @NotNull List<PatternConfiguration> getPatterns() {
         return this.patternList;
     }
 

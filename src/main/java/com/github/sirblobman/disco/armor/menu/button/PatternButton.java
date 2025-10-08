@@ -11,15 +11,16 @@ import com.github.sirblobman.api.language.replacer.ComponentReplacer;
 import com.github.sirblobman.api.language.replacer.Replacer;
 import com.github.sirblobman.api.language.replacer.StringReplacer;
 import com.github.sirblobman.api.menu.button.QuickButton;
+import com.github.sirblobman.api.utility.paper.ComponentConverter;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
-import com.github.sirblobman.disco.armor.pattern.DiscoArmorPattern;
+import com.github.sirblobman.disco.armor.configuration.pattern.PatternConfiguration;
 import com.github.sirblobman.api.shaded.adventure.text.Component;
 
 public final class PatternButton extends QuickButton {
-    private final DiscoArmorPattern pattern;
     private final DiscoArmorPlugin plugin;
+    private final PatternConfiguration pattern;
 
-    public PatternButton(@NotNull DiscoArmorPlugin plugin, @NotNull DiscoArmorPattern pattern) {
+    public PatternButton(@NotNull DiscoArmorPlugin plugin, @NotNull PatternConfiguration pattern) {
         this.plugin = plugin;
         this.pattern = pattern;
     }
@@ -28,7 +29,7 @@ public final class PatternButton extends QuickButton {
         return this.plugin;
     }
 
-    private @NotNull DiscoArmorPattern getPattern() {
+    private @NotNull PatternConfiguration getPattern() {
         return this.pattern;
     }
 
@@ -36,7 +37,7 @@ public final class PatternButton extends QuickButton {
     public void onLeftClick(@NotNull Player player, boolean shift) {
         DiscoArmorPlugin plugin = getPlugin();
         LanguageManager languageManager = plugin.getLanguageManager();
-        DiscoArmorPattern pattern = getPattern();
+        PatternConfiguration pattern = getPattern();
         String patternId = pattern.getId();
 
         String permissionName = ("disco-armor.pattern." + patternId);
@@ -52,7 +53,7 @@ public final class PatternButton extends QuickButton {
         configuration.set("pattern", patternId);
         playerDataManager.save(player);
 
-        Component displayName = pattern.getDisplayName(player);
+        Component displayName = ComponentConverter.normalToShaded(pattern.getMenuIcon().displayName());
         Replacer replacer = new ComponentReplacer("{pattern}", displayName);
         languageManager.sendMessage(player, "command.change-type", replacer);
     }

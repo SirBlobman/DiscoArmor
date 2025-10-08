@@ -69,4 +69,10 @@ public final class CustomPatternFrames extends CustomPattern {
         int randomValue = random.nextInt(frameListSize);
         return frameList.get(randomValue);
     }
+
+    @Override
+    public @NotNull Frame nextFrame() {
+        // TODO
+        return null;
+    }
 }

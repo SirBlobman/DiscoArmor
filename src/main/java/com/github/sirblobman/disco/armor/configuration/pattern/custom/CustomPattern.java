@@ -2,7 +2,6 @@ package com.github.sirblobman.disco.armor.configuration.pattern.custom;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.bukkit.Utility;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.sirblobman.api.configuration.IConfigurable;
@@ -33,4 +32,6 @@ public abstract class CustomPattern implements IConfigurable {
     public void setType(@NotNull CustomPatternType type) {
         this.type = type;
     }
+
+    public abstract @NotNull Frame nextFrame();
 }

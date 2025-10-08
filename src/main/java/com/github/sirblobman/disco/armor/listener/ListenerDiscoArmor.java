@@ -25,6 +25,8 @@ import com.github.sirblobman.api.plugin.listener.PluginListener;
 import com.github.sirblobman.api.utility.ItemUtility;
 import com.github.sirblobman.disco.armor.DiscoArmorPlugin;
 import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
+import com.github.sirblobman.disco.armor.configuration.playerdata.MemoryData;
+import com.github.sirblobman.disco.armor.configuration.playerdata.MemoryDataManager;
 import com.github.sirblobman.disco.armor.task.DiscoArmorTask;
 import com.github.sirblobman.disco.armor.task.DiscoArmorTaskManager;
 
@@ -36,8 +38,13 @@ public final class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        DiscoArmorTaskManager taskManager = getTaskManager();
-        taskManager.createTask(player);
+        DiscoArmorPlugin plugin = getPlugin();
+        MemoryDataManager memoryDataManager = plugin.getMemoryDataManager();
+        MemoryData data = memoryDataManager.getData(player);
+        if (data.isArmorEnabled()) {
+            DiscoArmorTaskManager taskManager = getTaskManager();
+            taskManager.createTask(player);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -66,11 +73,9 @@ public final class ListenerDiscoArmor extends PluginListener<DiscoArmorPlugin> {
             return;
         }
 
-        if (task.isEnabled()) {
-            task.disable();
-            if (configuration.isPreventFirstHit()) {
-                e.setCancelled(true);
-            }
+        taskManager.removeTask(player);
+        if (configuration.isPreventFirstHit()) {
+            e.setCancelled(true);
         }
     }
 

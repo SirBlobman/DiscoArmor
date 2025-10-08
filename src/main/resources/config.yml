@@ -3,6 +3,8 @@
 debug-mode: false
 
 # How much time should pass between color changes?
+# This setting is for built-in patterns.
+# Custom patterns have more specific frame timings.
 # 1 = once per tick
 # 20 = once per second
 # 1200 = once per minute

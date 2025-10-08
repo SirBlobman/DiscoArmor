@@ -21,6 +21,11 @@ public final class CustomPatternFixed extends CustomPattern {
         setFrame(frame);
     }
 
+    @Override
+    public @NotNull Frame nextFrame() {
+        return getFrame();
+    }
+
     public @NotNull Frame getFrame() {
         return this.frame;
     }

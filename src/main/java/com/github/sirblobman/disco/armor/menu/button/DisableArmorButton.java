@@ -27,12 +27,12 @@ public final class DisableArmorButton extends QuickButton {
         DiscoArmorTaskManager taskManager = plugin.getTaskManager();
         DiscoArmorTask task = taskManager.getTask(player);
 
-        if (task == null || !task.isEnabled()) {
+        if (task == null || task.isCancelled()) {
             languageManager.sendMessage(player, "error.armor-already-disabled");
             return;
         }
 
-        task.disable();
+        taskManager.removeTask(player);
     }
 
     private @NotNull DiscoArmorMainMenu getMenu() {

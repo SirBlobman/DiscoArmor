@@ -22,6 +22,12 @@ public final class CustomPatternCopy extends CustomPattern {
         setCopiedSlot(ConfigurationHelper.parseEnum(ArmorSlot.class, copyFromString, ArmorSlot.HELMET));
     }
 
+    @Override
+    public @NotNull Frame nextFrame() {
+        // TODO
+        return null;
+    }
+
     public @NotNull ArmorSlot getCopiedSlot() {
         return this.copiedSlot;
     }

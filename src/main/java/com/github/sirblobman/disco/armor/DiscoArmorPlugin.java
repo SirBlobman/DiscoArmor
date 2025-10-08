@@ -16,15 +16,9 @@ import com.github.sirblobman.api.update.SpigotUpdateManager;
 import com.github.sirblobman.api.utility.VersionUtility;
 import com.github.sirblobman.disco.armor.command.CommandDiscoArmor;
 import com.github.sirblobman.disco.armor.configuration.DiscoArmorConfiguration;
+import com.github.sirblobman.disco.armor.configuration.playerdata.MemoryDataManager;
 import com.github.sirblobman.disco.armor.listener.ListenerDiscoArmor;
 import com.github.sirblobman.disco.armor.pattern.PatternManager;
-import com.github.sirblobman.disco.armor.pattern.GrayscalePattern;
-import com.github.sirblobman.disco.armor.pattern.OldGloryPattern;
-import com.github.sirblobman.disco.armor.pattern.OneColorPattern;
-import com.github.sirblobman.disco.armor.pattern.RainbowPattern;
-import com.github.sirblobman.disco.armor.pattern.RandomPattern;
-import com.github.sirblobman.disco.armor.pattern.SmoothPattern;
-import com.github.sirblobman.disco.armor.pattern.YellowOrangePattern;
 import com.github.sirblobman.disco.armor.task.DiscoArmorTaskManager;
 import com.github.sirblobman.api.shaded.bstats.bukkit.Metrics;
 import com.github.sirblobman.api.shaded.bstats.charts.SimplePie;
@@ -34,12 +28,13 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
 
     private final PatternManager patternManager;
     private final DiscoArmorTaskManager taskManager;
+    private final MemoryDataManager memoryDataManager;
 
     public DiscoArmorPlugin() {
         this.configuration = new DiscoArmorConfiguration();
-
         this.patternManager = new PatternManager(this);
         this.taskManager = new DiscoArmorTaskManager(this);
+        this.memoryDataManager = new MemoryDataManager(this);
     }
 
     @Override
@@ -106,15 +101,14 @@ public final class DiscoArmorPlugin extends ConfigurablePlugin {
         return this.taskManager;
     }
 
+    public @NotNull MemoryDataManager getMemoryDataManager() {
+        return this.memoryDataManager;
+    }
+
     private void registerPatterns() {
         PatternManager patternManager = getPatternManager();
-        patternManager.register(GrayscalePattern.class);
-        patternManager.register(OldGloryPattern.class);
-        patternManager.register(OneColorPattern.class);
-        patternManager.register(RainbowPattern.class);
-        patternManager.register(RandomPattern.class);
-        patternManager.register(SmoothPattern.class);
-        patternManager.register(YellowOrangePattern.class);
+        patternManager.clearPatterns();
+        patternManager.loadConfigurationFiles();
     }
 
     private void registerCommands() {
